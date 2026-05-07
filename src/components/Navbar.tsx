@@ -1,9 +1,9 @@
-import { useState } from "react";
+// import { useState } from "react";
 import { NavLink } from "react-router-dom";
-import { Search } from "lucide-react";
+// import { Search } from "lucide-react";
 
 export default function Navbar() {
-  const [focused, setFocused] = useState(false);
+  // const [focused, setFocused] = useState(false);
 
   //  استایل مشترک لینک‌ها
   const navLinkClass = ({ isActive }: { isActive: boolean }) =>
@@ -17,20 +17,18 @@ export default function Navbar() {
   return (
     <div className="sticky top-0 z-50 bg-white/70 backdrop-blur-md border-b border-gray-200">
       <div className="max-w-[1400px] mx-auto px-6">
-
         <nav className="flex items-center justify-between py-4">
-
           {/*  Logo */}
           <div className="text-2xl font-extrabold text-purple-500 tracking-wide flex items-center gap-2 hover:text-purple-600 transition cursor-pointer">
-  🎬 <span className="hidden sm:inline">MovieExplorer</span>
-</div>
+            🎬 <span className="hidden sm:inline">MovieExplorer</span>
+          </div>
 
           {/*  Search */}
-          <div className="hidden md:block relative">
-             <Search
-    size={18}
-    className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
-  />
+          {/* <div className="hidden md:block relative">
+            <Search
+              size={18}
+              className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
+            />
             <input
               type="text"
               placeholder="Search movies..."
@@ -46,11 +44,10 @@ export default function Navbar() {
                 shadow-sm focus:shadow-md
               `}
             />
-          </div>
+          </div> */}
 
           {/*  Menu */}
           <div className="hidden md:flex gap-6 text-sm font-medium">
-
             <NavLink to="/" className={navLinkClass}>
               Home
             </NavLink>
@@ -66,7 +63,6 @@ export default function Navbar() {
             <NavLink to="/profile" className={navLinkClass}>
               Profile
             </NavLink>
-
           </div>
 
           {/*  Profile */}
@@ -77,9 +73,7 @@ export default function Navbar() {
               className="w-10 h-10 rounded-full border border-gray-200 hover:scale-105 transition cursor-pointer"
             />
           </div>
-
         </nav>
-
       </div>
     </div>
   );
