@@ -4,6 +4,7 @@ import MainLayout from "./layout/MainLayout";
 import HomePage from "./pages/HomePage";
 // import MovieDetails from "./pages/MovieDetails";
 import MovieDetails from "./pages/MovieDetails";
+import Favorite from "./pages/Favorite";
 
 function App() {
   return (
@@ -11,6 +12,7 @@ function App() {
       <Routes>
         <Route path="/" element={<HomePage/>}  />
            <Route  path="/movie/:id" element={<MovieDetails />} />
+              <Route path="/favorite" element={<Favorite />} />
       </Routes>
    
     </MainLayout>

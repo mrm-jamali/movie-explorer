@@ -1,5 +1,6 @@
 // import { useState } from "react";
 import { NavLink } from "react-router-dom";
+import { Link } from "react-router-dom";
 // import { Search } from "lucide-react";
 
 export default function Navbar() {
@@ -56,7 +57,7 @@ export default function Navbar() {
               Movies
             </NavLink>
 
-            <NavLink to="/favorites" className={navLinkClass}>
+            <NavLink to="/favorite" className={navLinkClass}>
               Favorites
             </NavLink>
 

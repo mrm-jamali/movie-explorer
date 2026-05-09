@@ -1,14 +1,18 @@
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
+import { useEffect,useState } from "react";
 import {
   fetchMovieDetails,
   fetchMovieCredits,
   fetchSimilarMovies,
 } from "../services/movieApi";
 
+import AddFavorite from "../components/AddFavorite";
+
+
 function MovieDetails() {
   const { id } = useParams();
-
+  
   // 🎬 Movie details
   const { data, isLoading, error } = useQuery({
     queryKey: ["movie", id],
@@ -36,16 +40,16 @@ function MovieDetails() {
 
   return (
     <div className="max-w-6xl mx-auto mt-10 px-4 md:px-6">
-      {/* 🎬 MAIN CARD */}
+      {/*  MAIN CARD */}
       <div className="flex flex-col md:flex-row gap-6 items-start bg-white rounded-2xl shadow-md p-4 md:p-6">
-        {/* 🎬 Poster */}
+        {/*  Poster */}
         <img
           src={`https://image.tmdb.org/t/p/w500${data.poster_path}`}
           alt={data.title}
           className="w-full md:w-[220px] rounded-xl shadow-sm"
         />
 
-        {/* 📄 Info */}
+        {/*  Info */}
         <div className="flex flex-col flex-1">
           {/* Title */}
           <h1 className="text-2xl font-bold text-gray-900">{data.title}</h1>
@@ -66,13 +70,14 @@ function MovieDetails() {
 
           {/* Rating */}
           <div className="text-yellow-500 font-semibold mb-4">
-            ⭐ {data.vote_average.toFixed(1)}
+             {data.vote_average.toFixed(1)}
           </div>
 
           {/* Favorite Button */}
-          <button className="bg-purple-500 text-white px-5 py-2 rounded-lg hover:bg-purple-600 transition w-fit">
-            ❤️ Add to Favorite
-          </button>
+          {/* <button className="bg-purple-500 text-white px-5 py-2 rounded-lg hover:bg-purple-600 transition w-fit">
+             Add to Favorite
+          </button> */}
+        {data && <AddFavorite movie={data} />}
 
           {/* Overview */}
           <h2 className="text-lg font-bold mt-3">Overview</h2>
@@ -83,7 +88,7 @@ function MovieDetails() {
         </div>
       </div>
 
-      {/* 🎭 CAST */}
+      {/*  CAST */}
     <div className="mt-10">
 
   <h2 className="text-lg font-bold mb-4">
@@ -126,8 +131,8 @@ function MovieDetails() {
 
 </div>
 
-      {/* 🎬 SIMILAR MOVIES */}
-      {/* 🎬 SIMILAR MOVIES */}
+      {/*  SIMILAR MOVIES */}
+      {/*  SIMILAR MOVIES */}
       <div className="mt-12">
         <h2 className="text-lg font-bold mb-4">Similar Movies</h2>
 
@@ -137,7 +142,7 @@ function MovieDetails() {
               key={movie.id}
               className="w-[140px] flex-shrink-0 cursor-pointer hover:scale-105 transition"
             >
-              {/* 🎬 Poster wrapper */}
+              {/*  Poster wrapper */}
               <div className="relative">
                 {/* Poster */}
                 <img
@@ -145,10 +150,10 @@ function MovieDetails() {
                   className="rounded-lg w-full h-[200px] object-cover"
                 />
 
-                {/* ⭐ Rating Badge */}
+                {/* Rating Badge */}
                 {movie.vote_average && (
                   <div className="absolute top-2 left-2 bg-black/70 text-white text-xs px-2 py-1 rounded-full">
-                    ⭐ {movie.vote_average.toFixed(1)}
+                     {movie.vote_average.toFixed(1)}
                   </div>
                 )}
               </div>

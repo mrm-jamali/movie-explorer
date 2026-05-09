@@ -30,10 +30,10 @@ console.log(id);
           className="w-full h-[240px] object-cover"
         />
 
-        {/* ⭐ Rating */}
+        {/*  Rating */}
         {rating !== undefined && (
           <div className="absolute bottom-[90px] left-2 bg-gray-800 text-gray-200 text-xs px-2 py-1 rounded-full shadow">
-            ⭐ {rating.toFixed(1)}
+             {rating.toFixed(1)}
           </div>
         )}
 
