@@ -56,6 +56,7 @@ export default function Navbar() {
             <NavLink to="/movies" className={navLinkClass}>
               Movies
             </NavLink>
+       
 
             <NavLink to="/favorite" className={navLinkClass}>
               Favorites

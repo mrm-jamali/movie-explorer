@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { useEffect,useState } from "react";
+
 import {
   fetchMovieDetails,
   fetchMovieCredits,
