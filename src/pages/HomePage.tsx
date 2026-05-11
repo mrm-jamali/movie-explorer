@@ -121,6 +121,7 @@ function HomePage() {
                   rating={movie.vote_average}
                    id={movie.id}
                 />
+    
               </div>
             ))}
           </div>
@@ -135,12 +136,13 @@ function HomePage() {
         <div className="flex gap-6 overflow-x-auto scrollbar-hide pb-4">
           {continueWatching?.map((movie: Movie) => (
             <div key={movie.id} className="w-[200px] flex-shrink-0">
-              <MovieCard
-                title={movie.title}
-                poster={movie.poster_path}
-                release_date={movie.release_date}
-                rating={movie.vote_average}
-              />
+               <MovieCard
+                  title={movie.title}
+                  poster={movie.poster_path}
+                  release_date={movie.release_date}
+                  rating={movie.vote_average}
+                   id={movie.id}
+                />
             </div>
           ))}
         </div>

@@ -1,3 +1,9 @@
+type Props = {
+  title: string;
+  backdrop: string;
+  overview: string;
+};
+
 export default function Hero({ title, backdrop, overview }: Props) {
   return (
     <div className="mt-6">

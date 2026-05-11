@@ -1,6 +1,6 @@
 // import { useState } from "react";
 import { NavLink } from "react-router-dom";
-import { Link } from "react-router-dom";
+
 // import { Search } from "lucide-react";
 
 export default function Navbar() {

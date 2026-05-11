@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { FaHeart } from "react-icons/fa";
 // import { useFavorites } from "../contexts/FavoriteContext";
-import { useFavorites } from "../contexts/Favoritecontext";
+import { useFavorites } from "../contexts/FavoriteContext";
 
 type Props = {
   id: number;
