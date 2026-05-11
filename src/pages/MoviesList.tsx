@@ -1,14 +1,30 @@
 import { useQuery } from "@tanstack/react-query";
 import { fetchPopularMovies } from "../services/movieApi";
 import MovieCard from "../components/MovieCard";
+import Pagination from "../components/Pagination";
+import { useEffect, useRef, useState } from "react";
 
 export default function MoviesList() {
+  const [page, setPage] = useState(1);
+
+  // برای اسکرول به لیست فیلم‌ها
+  const topRef = useRef<HTMLDivElement | null>(null);
+
   const { data, isLoading, error } = useQuery({
-    queryKey: ["movies"],
-    queryFn: fetchPopularMovies,
+    queryKey: ["movies", page],
+    queryFn: () => fetchPopularMovies(page),
   });
 
   const movies = data?.results ?? [];
+ const totalPages = data?.total_pages ?? 1;
+
+  // وقتی page تغییر کرد اسکرول بره بالا روی لیست
+  useEffect(() => {
+    topRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  }, [page]);
 
   if (isLoading)
     return <p className="text-center mt-10">Loading...</p>;
@@ -46,15 +62,15 @@ export default function MoviesList() {
         </div>
       </div>
 
-      {/* Main Layout */}
-      <div className="flex gap-6">
+      {/* Movies Section */}
+      <div ref={topRef} className="flex gap-6">
 
         {/* Sidebar */}
         <div className="w-64 bg-white p-4 rounded-xl shadow">
           Filters Sidebar
         </div>
 
-        {/* Movies Section */}
+        {/* Movies Grid */}
         <div className="flex-1">
 
           {/* Count */}
@@ -76,14 +92,15 @@ export default function MoviesList() {
             ))}
           </div>
 
+          {/* Pagination */}
+          <Pagination
+            page={page}
+            setPage={setPage}
+            totalPages={totalPages}
+          />
+
         </div>
       </div>
-
-      {/* Pagination */}
-      <div className="mt-10 flex justify-center">
-        Pagination
-      </div>
-
     </div>
   );
 }

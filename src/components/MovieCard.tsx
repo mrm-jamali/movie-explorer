@@ -1,8 +1,6 @@
 import { Link } from "react-router-dom";
 import { FaHeart } from "react-icons/fa";
-// import { useFavorites } from "../contexts/FavoriteContext";
 import { useFavorites } from "../contexts/FavoriteContext";
-
 
 type Props = {
   id: number;
@@ -21,18 +19,32 @@ export default function MovieCard({
 }: Props) {
   const { favorites, toggleFavorite } = useFavorites();
 
-  const isFavorite = favorites.includes(id);
+  // 👇 چون الان favorites آبجکت movie هست نه فقط id
+  const isFavorite = favorites.some((m) => m.id === id);
+
   const year = release_date?.slice(0, 4);
 
   return (
     <div className="relative w-[160px] h-[320px] bg-gray-900 text-white rounded-lg overflow-hidden shadow-lg hover:scale-105 transition">
 
-      {/*  Favorite Button */}
+      {/* Favorite Button */}
       <button
-        onClick={() => toggleFavorite(id)}
-        className="absolute top-2 right-2 z-10 text-xl"
+        onClick={() =>
+          toggleFavorite({
+            id,
+            title,
+            poster,
+            release_date,
+            rating,
+          })
+        }
+        className="absolute top-2 right-2 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-purple-200 transition"
       >
-        <FaHeart className={isFavorite ? "text-red-500" : "text-white/40"} />
+        <FaHeart
+          className={`text-lg transition duration-200
+            ${isFavorite ? "text-purple-600" : "text-white"}
+          `}
+        />
       </button>
 
       <Link to={`/movie/${id}`} className="block">

@@ -10,10 +10,16 @@ export type Movie = {
 };
 
 
-export type MoviesResponse = {
-  results: Movie[];
-};
+// export type MoviesResponse = {
+//   results: Movie[];
+// };
 
+export type MoviesResponse = {
+  page: number;
+  results: Movie[];
+  total_pages: number;
+  total_results: number;
+};
 
 export type Genre = {
   id: number;
