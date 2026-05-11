@@ -7,7 +7,7 @@ import MovieDetails from "./pages/MovieDetails";
 import Favorite from "./pages/Favorite";
 import MoviesList from "./pages/MoviesList";
 
-import { FavoriteProvider } from "./contexts/Favoritecontext";
+import { FavoriteProvider } from "./contexts/FavoriteContext";
 
 function App() {
   return (
