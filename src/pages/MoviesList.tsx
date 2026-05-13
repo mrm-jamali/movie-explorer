@@ -1,33 +1,51 @@
 import { useQuery } from "@tanstack/react-query";
-import { fetchPopularMovies } from "../services/movieApi";
+import { fetchFilteredMovies } from "../services/movieApi";
 import MovieCard from "../components/MovieCard";
 import Pagination from "../components/Pagination";
 import { useEffect, useRef, useState } from "react";
+import MoviesFilter from "../components/MoviesFilter";
+import { useFilterStore } from "../store/filterStore";
 
 export default function MoviesList() {
   const [page, setPage] = useState(1);
+  const [showFilters, setShowFilters] = useState(true);
 
-  // برای اسکرول به لیست فیلم‌ها
+  const selectedGenres = useFilterStore((state) => state.selectedGenres);
+  const releaseYear = useFilterStore((state) => state.releaseYear);
+  const rating = useFilterStore((state) => state.rating);
+
+  const resetFilters = useFilterStore((state) => state.resetFilters);
+
   const topRef = useRef<HTMLDivElement | null>(null);
 
+  const handleReset = () => {
+    resetFilters();
+    setPage(1);
+  };
+
   const { data, isLoading, error } = useQuery({
-    queryKey: ["movies", page],
-    queryFn: () => fetchPopularMovies(page),
+    queryKey: [
+      "movies",
+      page,
+      selectedGenres.join(","),
+      releaseYear,
+      rating,
+    ],
+    queryFn: () =>
+      fetchFilteredMovies(page, selectedGenres, releaseYear, rating),
   });
 
   const movies = data?.results ?? [];
- const totalPages = data?.total_pages ?? 1;
+  const totalPages = data?.total_pages ?? 1;
 
-  // وقتی page تغییر کرد اسکرول بره بالا روی لیست
+  const isInitialLoading = isLoading && movies.length === 0;
+
   useEffect(() => {
     topRef.current?.scrollIntoView({
       behavior: "smooth",
       block: "start",
     });
   }, [page]);
-
-  if (isLoading)
-    return <p className="text-center mt-10">Loading...</p>;
 
   if (error)
     return (
@@ -39,7 +57,7 @@ export default function MoviesList() {
   return (
     <div className="max-w-7xl mx-auto px-4 mt-6">
 
-      {/* Title */}
+      {/* TITLE */}
       <div className="mb-6">
         <h1 className="text-2xl font-bold">Movies</h1>
         <p className="text-gray-500 text-sm">
@@ -47,39 +65,55 @@ export default function MoviesList() {
         </p>
       </div>
 
-      {/* Top Bar */}
+      {/* TOP BAR */}
       <div className="flex justify-between items-center mb-6">
-        <div></div>
+        <div />
 
         <div className="flex items-center gap-3">
           <button className="px-3 py-2 border rounded-md text-sm">
             Sort by: Latest
           </button>
 
-          <button className="px-3 py-2 border rounded-md text-sm">
+          <button
+            onClick={() => setShowFilters((prev) => !prev)}
+            className="px-3 py-2 border rounded-md text-sm"
+          >
             Filter
           </button>
         </div>
       </div>
 
-      {/* Movies Section */}
+      {/* MAIN SECTION */}
       <div ref={topRef} className="flex gap-6">
 
-        {/* Sidebar */}
-        <div className="w-64 bg-white p-4 rounded-xl shadow">
-          Filters Sidebar
-        </div>
+        {/* SIDEBAR */}
+        {showFilters && (
+          <MoviesFilter onReset={handleReset} />
+        )}
 
-        {/* Movies Grid */}
+        {/* CONTENT */}
         <div className="flex-1">
 
-          {/* Count */}
-          <p className="mb-4 text-sm text-gray-500">
-            {movies.length} Movies found
-          </p>
+          {/* LOADING */}
+          {isInitialLoading && (
+            <p className="text-center mt-10">Loading...</p>
+          )}
 
-          {/* Grid */}
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          {/* COUNT */}
+          {!isInitialLoading && (
+            <p className="mb-4 text-sm text-gray-500">
+              {movies.length} Movies found
+            </p>
+          )}
+
+          {/* GRID (🔥 اینجا مهمه) */}
+          <div
+            className={`grid gap-4 transition-all duration-300 ${
+              showFilters
+                ? "grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
+                : "grid-cols-2 md:grid-cols-3 lg:grid-cols-6"
+            }`}
+          >
             {movies.map((movie: any) => (
               <MovieCard
                 key={movie.id}
@@ -92,13 +126,12 @@ export default function MoviesList() {
             ))}
           </div>
 
-          {/* Pagination */}
+          {/* PAGINATION */}
           <Pagination
             page={page}
             setPage={setPage}
             totalPages={totalPages}
           />
-
         </div>
       </div>
     </div>
