@@ -20,7 +20,7 @@ export default function GenreFilter({
   return (
     <div className="flex items-center justify-between gap-6 flex-wrap">
 
-      {/* 🎭 Genres */}
+      {/*  Genres */}
       <div className="flex gap-2 flex-wrap">
         {filteredGenres.map((genre) => (
           <button
@@ -37,7 +37,7 @@ export default function GenreFilter({
         ))}
       </div>
 
-      {/* 👀 View All */}
+      {/*  View All */}
       <button
         onClick={() => onSelectGenre(null)}
         className={`px-4 py-2 rounded-full transition cursor-pointer ${

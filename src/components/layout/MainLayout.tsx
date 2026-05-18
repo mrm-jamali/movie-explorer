@@ -1,0 +1,23 @@
+import Sidebar from "./Sidebar";
+
+type MainLayoutProps = {
+  children: React.ReactNode;
+};
+
+export default function MainLayout({
+  children,
+}: MainLayoutProps) {
+  return (
+    <div className="flex min-h-screen bg-gray-50">
+      
+      {/* Sidebar */}
+      <Sidebar />
+
+      {/* Main Content */}
+      <main className="flex-1 overflow-y-auto">
+        {children}
+      </main>
+
+    </div>
+  );
+}
