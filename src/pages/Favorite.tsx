@@ -1,126 +1,157 @@
-import { useEffect, useState } from "react";
-import FavoriteMovieMenu from "../components/FavoriteMovieMenu";
+import { useEffect, useRef, useState } from "react";
+import { useFavorites } from "../contexts/FavoriteContext";
+import { useAuth } from "../contexts/AuthContext";
 
 export default function Favorites() {
-  const [favorites, setFavorites] = useState<any[]>([]);
+  const { favorites, removeFavorite } = useFavorites();
+  const { user } = useAuth();
 
+  const [openMenuId, setOpenMenuId] = useState<number | null>(null);
+  const menuRef = useRef<HTMLDivElement | null>(null);
+
+  // 🔴 حل مشکل: بستن منو با کلیک بیرون
   useEffect(() => {
-    const stored = localStorage.getItem("favorites");
-    if (stored) setFavorites(JSON.parse(stored));
+    const handleClickOutside = (e: any) => {
+      if (menuRef.current && !menuRef.current.contains(e.target)) {
+        setOpenMenuId(null);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () =>
+      document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  return (
-    <div className="max-w-7xl mx-auto px-6 mt-10">
+  const handleShare = (movie: any) => {
+    const url = window.location.origin + `/movie/${movie.id}`;
 
-      {/* Header */}
-      <div className="flex items-center justify-between mb-6">
+    if (navigator.share) {
+      navigator.share({
+        title: movie.title,
+        text: `Watch: ${movie.title}`,
+        url,
+      });
+    } else {
+      navigator.clipboard.writeText(url);
+      alert("Link copied!");
+    }
+  };
+
+  return (
+    <div className="max-w-6xl mx-auto px-4 md:px-6 mt-10">
+
+      {/* HEADER */}
+      <div className="flex justify-between items-center mb-10">
         <div>
-          <h1 className="text-2xl font-bold">
-            Your List Of Favorite Movies
+          <h1 className="text-3xl font-bold text-purple-700">
+            Favorite Movies
           </h1>
           <p className="text-gray-500 mt-1">
-            Here are the movies you have added to your favorite
+            Your personal movie collection
           </p>
         </div>
 
-        {/*  Counter Button */}
-        {/*  Counter Button (Improved UI) */}
-<div className="flex items-center gap-2 bg-white border border-gray-200 shadow-sm px-4 py-2 rounded-full">
-  
-  {/* Dot indicator */}
-  <span className="w-2 h-2 bg-purple-500 rounded-full"></span>
-
-  {/* Text */}
-  <span className="text-sm font-semibold text-gray-700">
-    {favorites.length} Movies
-  </span>
-
-</div>
+        <div className="bg-purple-100 text-purple-700 px-4 py-2 rounded-full font-semibold">
+          {favorites.length} Movies
+        </div>
       </div>
 
-      {/* List */}
-      <div className="flex flex-col gap-4">
+      {/* EMPTY STATES */}
+      {!user ? (
+        <p className="text-center text-gray-500 mt-20">
+          Please login first
+        </p>
+      ) : favorites.length === 0 ? (
+        <p className="text-center text-gray-500 mt-20">
+          No favorites yet 🎬
+        </p>
+      ) : (
+        <div className="flex flex-col gap-5">
 
-        {favorites.length === 0 ? (
-          <p className="text-gray-500">No favorite movies yet.</p>
-        ) : (
-          favorites.map((movie) => (
+          {favorites.map((movie) => (
             <div
               key={movie.id}
-              className="flex items-center gap-4 bg-white shadow-md rounded-xl py-5 px-4 relative"
+              className="flex gap-5 bg-white rounded-2xl shadow-md p-4 hover:shadow-lg transition relative"
             >
-              {/*  Poster */}
+
+              {/* POSTER */}
               <img
-                src={`https://image.tmdb.org/t/p/w300${movie.poster_path}`}
-                alt={movie.title}
-                className="w-[120px] h-[120px] rounded-xl object-cover"
+                src={`https://image.tmdb.org/t/p/w300${movie.poster}`}
+                className="w-[110px] h-[150px] object-cover rounded-xl"
               />
 
-              {/*  Info */}
-              <div className="flex flex-col h-[120px] justify-between w-full">
+              {/* INFO */}
+              <div className="flex flex-col justify-between flex-1">
 
-                {/* Title + Rating */}
-                <div className="flex items-center gap-2">
+                <div>
                   <h2 className="text-xl font-bold text-gray-800">
                     {movie.title}
                   </h2>
 
-                  <span className="text-black text-sm font-bold flex items-center gap-1">
-                    <span className="text-yellow-500">⭐</span>
-                    {movie.vote_average?.toFixed(1)}
-                  </span>
-                </div>
-
-                {/* Year + Genres */}
-                <div className="flex items-center gap-1">
-                  <p className="text-sm text-gray-500">
+                  <p className="text-sm text-purple-500 mt-1">
                     {movie.release_date?.slice(0, 4)}
                   </p>
 
-                  <div className="flex flex-wrap gap-1 text-sm text-gray-600">
-                    {movie.genres?.slice(0, 3)?.map((g: any) => (
-                      <span
-                        key={g.id}
-                        className="bg-gray-100 px-2 py-0.5 rounded-full text-xs"
-                      >
-                        {g.name}
-                      </span>
-                    ))}
+                  {/* ⭐ rating */}
+                  <div className="flex items-center gap-2 mt-2">
+                    <span className="text-purple-600 text-sm font-bold">
+                      ⭐ {movie.rating?.toFixed(1) || "N/A"}
+                    </span>
                   </div>
-                </div>
 
-                {/* Production */}
-                <div className="flex items-center gap-2 bg-purple-100 px-2 py-[2px] rounded-md w-fit">
-                  <button className="text-gray-500 hover:text-black text-lg leading-none">
-                    ☰
-                  </button>
-
-                  <p className="text-[11px] text-gray-600 leading-none">
-                    {movie.production_companies?.[0]?.name}
+                  {/* overview */}
+                  <p className="text-xs text-gray-500 mt-2 line-clamp-2 leading-relaxed">
+                    {movie.overview || "No description available for this movie."}
                   </p>
                 </div>
 
-                {/* Overview */}
-                <p className="text-xs text-gray-500 line-clamp-2 w-[55%]">
-                  {movie.overview}
-                </p>
-
               </div>
 
-              {/* Menu */}
-              <FavoriteMovieMenu
-                movie={movie}
-                onRemove={(id) => {
-                  const updated = favorites.filter((m) => m.id !== id);
-                  setFavorites(updated);
-                  localStorage.setItem("favorites", JSON.stringify(updated));
-                }}
-              />
+              {/* MENU */}
+              <div className="relative" ref={menuRef}>
+
+                {/* 3 dots */}
+                <button
+                  onClick={() =>
+                    setOpenMenuId(openMenuId === movie.id ? null : movie.id)
+                  }
+                  className="text-purple-600 text-2xl font-bold px-2"
+                >
+                  ⋮
+                </button>
+
+                {/* dropdown */}
+                {openMenuId === movie.id && (
+                  <div className="absolute right-0 mt-2 w-40 rounded-2xl bg-white shadow-xl overflow-hidden border border-purple-100">
+
+                    <button
+                      onClick={() => {
+                        handleShare(movie);
+                        setOpenMenuId(null);
+                      }}
+                      className="w-full text-left px-4 py-2 text-sm hover:bg-purple-50 text-purple-700 transition"
+                    >
+                      📤 Share
+                    </button>
+
+                    <button
+                      onClick={() => {
+                        removeFavorite(movie.id);
+                        setOpenMenuId(null);
+                      }}
+                      className="w-full text-left px-4 py-2 text-sm hover:bg-red-50 text-red-500 transition"
+                    >
+                      🗑 Remove
+                    </button>
+
+                  </div>
+                )}
+              </div>
 
             </div>
-          ))
-        )}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

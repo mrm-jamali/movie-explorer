@@ -1,4 +1,4 @@
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink, useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 
 export default function Navbar() {
@@ -7,7 +7,9 @@ export default function Navbar() {
 
   const navLinkClass = ({ isActive }: { isActive: boolean }) =>
     `relative transition ${
-      isActive ? "text-purple-500" : "text-gray-600 hover:text-purple-500"
+      isActive
+        ? "text-purple-500"
+        : "text-gray-600 hover:text-purple-500"
     }
     after:content-[''] after:absolute after:left-0 after:-bottom-1
     after:h-[2px] after:bg-purple-500 after:transition-all after:duration-300
@@ -16,15 +18,20 @@ export default function Navbar() {
   return (
     <div className="sticky top-0 z-50 bg-white/70 backdrop-blur-md border-b border-gray-200">
       <div className="max-w-[1400px] mx-auto px-6">
+
         <nav className="flex items-center justify-between py-4">
 
           {/* Logo */}
           <div className="text-2xl font-extrabold text-purple-500 tracking-wide flex items-center gap-2 hover:text-purple-600 transition cursor-pointer">
-            🎬 <span className="hidden sm:inline">MovieExplorer</span>
+            🎬
+            <span className="hidden sm:inline">
+              MovieExplorer
+            </span>
           </div>
 
           {/* Menu */}
           <div className="hidden md:flex gap-6 text-sm font-medium">
+
             <NavLink to="/" className={navLinkClass}>
               Home
             </NavLink>
@@ -42,27 +49,31 @@ export default function Navbar() {
                 Profile
               </NavLink>
             )}
+
           </div>
 
-          {/* Right side */}
+          {/* Right Side */}
           <div className="flex items-center gap-3">
 
-            {/* اگر کاربر لاگین کرده */}
             {user ? (
               <div className="flex items-center gap-3">
 
                 {/* Avatar */}
-                <img
-                  src="https://i.pravatar.cc/60"
-                  alt="profile"
-                  className="w-10 h-10 rounded-full border border-gray-200 hover:scale-105 transition"
-                />
+                <Link to="/profile">
+
+                 <img
+  src={user?.avatar}
+  alt={user?.username}
+  className="w-10 h-10 rounded-full border border-gray-200 hover:scale-105 transition cursor-pointer"
+/>
+
+                </Link>
 
                 {/* Logout */}
                 <button
                   onClick={() => {
-                    logout();        // خروج کاربر
-                    navigate("/");   // برگشت به خانه
+                    logout();
+                    navigate("/");
                   }}
                   className="px-4 py-2 text-sm font-medium text-red-500 border border-red-400 rounded-full hover:bg-red-500 hover:text-white transition"
                 >
@@ -71,7 +82,6 @@ export default function Navbar() {
 
               </div>
             ) : (
-              /* اگر کاربر لاگین نکرده */
               <>
                 <NavLink
                   to="/login"
@@ -90,7 +100,9 @@ export default function Navbar() {
             )}
 
           </div>
+
         </nav>
+
       </div>
     </div>
   );

@@ -13,7 +13,7 @@ import { useAuth } from "../contexts/AuthContext";
 function MovieDetails() {
   const { id } = useParams();
 
-  const { toggleFavorite, isFavorite } = useFavorites();
+  const { toggleFavorite, favorites } = useFavorites();
   const { user } = useAuth();
 
   // 🎬 Movie details
@@ -28,7 +28,7 @@ function MovieDetails() {
     queryFn: () => fetchMovieCredits(id!),
   });
 
-  // 🎬 Similar movies
+  // 🎬 Similar
   const { data: similarData } = useQuery({
     queryKey: ["similar", id],
     queryFn: () => fetchSimilarMovies(id!),
@@ -44,19 +44,21 @@ function MovieDetails() {
       </p>
     );
 
-  const favorite = isFavorite(data.id);
+  const isFavorite = favorites.some(
+    (m) => m.id === data.id
+  );
 
   return (
     <div className="max-w-6xl mx-auto mt-10 px-4 md:px-6">
 
       {/* MAIN CARD */}
-      <div className="flex flex-col md:flex-row gap-6 bg-white rounded-2xl shadow-md p-4 md:p-6">
+      <div className="flex flex-col md:flex-row gap-6 items-start bg-white rounded-2xl shadow-md p-4 md:p-6">
 
         {/* Poster */}
         <img
           src={`https://image.tmdb.org/t/p/w500${data.poster_path}`}
           alt={data.title}
-          className="w-full md:w-[220px] rounded-xl object-cover"
+          className="w-full md:w-[220px] rounded-xl shadow-sm"
         />
 
         {/* Info */}
@@ -68,7 +70,7 @@ function MovieDetails() {
           </h1>
 
           {/* Year + Genres */}
-          <div className="flex flex-wrap items-center gap-2 text-sm text-gray-500 mt-2">
+          <div className="flex flex-wrap items-center gap-2 md:gap-3 text-sm text-gray-500 mt-2 mb-3">
             <span>{data.release_date?.slice(0, 4)}</span>
 
             {data.genres?.map((g: any) => (
@@ -82,11 +84,11 @@ function MovieDetails() {
           </div>
 
           {/* Rating */}
-          <div className="text-yellow-500 font-semibold mt-3">
-            ⭐ {data.vote_average?.toFixed(1)}
+          <div className="text-yellow-500 font-semibold mb-4">
+            {data.vote_average?.toFixed(1)}
           </div>
 
-          {/* FAVORITE BUTTON */}
+          {/* Favorite Button */}
           <button
             onClick={() => {
               if (!user) {
@@ -102,17 +104,16 @@ function MovieDetails() {
                 rating: data.vote_average,
               });
             }}
-            className={`px-5 py-2 rounded-lg mt-4 w-fit transition ${
-              favorite
-                ? "bg-red-500 text-white"
-                : "bg-purple-500 text-white hover:bg-purple-600"
-            }`}
+            className="bg-purple-500 text-white px-5 py-2 rounded-lg hover:bg-purple-600 transition w-fit flex items-center gap-2"
           >
-            {favorite ? "❤️ Added to Favorites" : "Add to Favorite"}
+            {isFavorite ? "Added ❤️" : "Add to Favorite"}
           </button>
 
           {/* Overview */}
-          <h2 className="text-lg font-bold mt-4">Overview</h2>
+          <h2 className="text-lg font-bold mt-3">
+            Overview
+          </h2>
+
           <p className="text-gray-600 text-sm leading-relaxed mt-2">
             {data.overview}
           </p>
@@ -121,22 +122,35 @@ function MovieDetails() {
 
       {/* CAST */}
       <div className="mt-10">
-        <h2 className="text-lg font-bold mb-4">Cast</h2>
 
-        <div className="flex gap-4 flex-wrap">
+        <h2 className="text-lg font-bold mb-4">
+          Cast
+        </h2>
+
+        <div className="flex flex-wrap gap-4">
+
           {castData?.cast
             ?.filter((actor: any) => actor.profile_path)
             ?.slice(0, 6)
             .map((actor: any) => (
               <div
                 key={actor.id}
-                className="w-[90px] text-center"
+                className="flex flex-col items-center w-[90px]"
               >
                 <img
                   src={`https://image.tmdb.org/t/p/w200${actor.profile_path}`}
-                  className="w-[70px] h-[70px] rounded-lg object-cover mx-auto"
+                  className="w-[70px] h-[70px] md:w-[80px] md:h-[80px] object-cover rounded-lg shadow-sm"
                 />
-                <p className="text-xs mt-1">{actor.name}</p>
+
+                <p className="text-xs text-center mt-2 font-semibold text-gray-700 line-clamp-1">
+                  {actor.name}
+                </p>
+
+                {actor.character && (
+                  <p className="text-[10px] text-center text-gray-400 line-clamp-1">
+                    {actor.character}
+                  </p>
+                )}
               </div>
             ))}
         </div>
@@ -144,24 +158,35 @@ function MovieDetails() {
 
       {/* SIMILAR MOVIES */}
       <div className="mt-12">
+
         <h2 className="text-lg font-bold mb-4">
           Similar Movies
         </h2>
 
-        <div className="flex gap-4 overflow-x-auto pb-2">
+        <div className="flex gap-4 overflow-x-auto scrollbar-hide pb-2 px-1">
+
           {similarData?.results
             ?.slice(0, 10)
             .map((movie: any) => (
               <div
                 key={movie.id}
-                className="w-[140px] flex-shrink-0"
+                className="w-[140px] flex-shrink-0 cursor-pointer hover:scale-105 transition"
               >
-                <img
-                  src={`https://image.tmdb.org/t/p/w300${movie.poster_path}`}
-                  className="rounded-lg w-full h-[200px] object-cover"
-                />
+                <div className="relative">
 
-                <p className="text-xs mt-1 line-clamp-2">
+                  <img
+                    src={`https://image.tmdb.org/t/p/w300${movie.poster_path}`}
+                    className="rounded-lg w-full h-[200px] object-cover"
+                  />
+
+                  {movie.vote_average && (
+                    <div className="absolute top-2 left-2 bg-black/70 text-white text-xs px-2 py-1 rounded-full">
+                      {movie.vote_average.toFixed(1)}
+                    </div>
+                  )}
+                </div>
+
+                <p className="text-xs mt-1 text-gray-700 line-clamp-2">
                   {movie.title}
                 </p>
 
@@ -172,7 +197,6 @@ function MovieDetails() {
             ))}
         </div>
       </div>
-
     </div>
   );
 }
