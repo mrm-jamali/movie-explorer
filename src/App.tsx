@@ -13,6 +13,7 @@ import RegisterPage from "./pages/RegisterPage";
 
 import { FavoriteProvider } from "./contexts/FavoriteContext";
 import { AuthProvider } from "./contexts/AuthContext";
+import { WatchListProvider } from "./contexts/WatchListContext";
 
 import ProtectedRoute from "./routes/ProtectedRoute";
 
@@ -21,37 +22,39 @@ function App() {
     <HashRouter>
       <AuthProvider>
         <FavoriteProvider>
-          <MainLayout>
-            <Routes>
-              {/* عمومی */}
-              <Route path="/" element={<HomePage />} />
-              <Route path="/movies" element={<MoviesList />} />
-              <Route path="/movie/:id" element={<MovieDetails />} />
+          <WatchListProvider>
+            <MainLayout>
+              <Routes>
+                {/* عمومی */}
+                <Route path="/" element={<HomePage />} />
+                <Route path="/movies" element={<MoviesList />} />
+                <Route path="/movie/:id" element={<MovieDetails />} />
 
-              {/* Auth */}
-              <Route path="/login" element={<LoginPage />} />
-              <Route path="/register" element={<RegisterPage />} />
+                {/* Auth */}
+                <Route path="/login" element={<LoginPage />} />
+                <Route path="/register" element={<RegisterPage />} />
 
-              {/* محافظت‌شده */}
-              <Route
-                path="/profile"
-                element={
-                  <ProtectedRoute>
-                    <ProfilePage />
-                  </ProtectedRoute>
-                }
-              />
+                {/* محافظت‌شده */}
+                <Route
+                  path="/profile"
+                  element={
+                    <ProtectedRoute>
+                      <ProfilePage />
+                    </ProtectedRoute>
+                  }
+                />
 
-              <Route
-                path="/favorite"
-                element={
-                  <ProtectedRoute>
-                    <Favorite />
-                  </ProtectedRoute>
-                }
-              />
-            </Routes>
-          </MainLayout>
+                <Route
+                  path="/favorite"
+                  element={
+                    <ProtectedRoute>
+                      <Favorite />
+                    </ProtectedRoute>
+                  }
+                />
+              </Routes>
+            </MainLayout>
+          </WatchListProvider>
         </FavoriteProvider>
       </AuthProvider>
     </HashRouter>

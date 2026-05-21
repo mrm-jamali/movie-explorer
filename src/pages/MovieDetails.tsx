@@ -1,5 +1,6 @@
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
+import { Bookmark } from "lucide-react";
 
 import {
   fetchMovieDetails,
@@ -8,12 +9,16 @@ import {
 } from "../services/movieApi";
 
 import { useFavorites } from "../contexts/FavoriteContext";
+import { useWatchList } from "../contexts/WatchListContext";
 import { useAuth } from "../contexts/AuthContext";
 
 function MovieDetails() {
   const { id } = useParams();
 
   const { toggleFavorite, isFavorite } = useFavorites();
+  const { toggleWatchList, isInWatchList } =
+    useWatchList();
+
   const { user } = useAuth();
 
   // 🎬 Movie details
@@ -35,7 +40,11 @@ function MovieDetails() {
   });
 
   if (isLoading)
-    return <p className="text-center mt-10">Loading...</p>;
+    return (
+      <p className="text-center mt-10">
+        Loading...
+      </p>
+    );
 
   if (error)
     return (
@@ -45,6 +54,10 @@ function MovieDetails() {
     );
 
   const favorite = isFavorite(data.id);
+
+  const watchListed = isInWatchList(
+    data.id
+  );
 
   return (
     <div className="max-w-6xl mx-auto mt-10 px-4 md:px-6">
@@ -69,7 +82,9 @@ function MovieDetails() {
 
           {/* Year + Genres */}
           <div className="flex flex-wrap items-center gap-2 text-sm text-gray-500 mt-2">
-            <span>{data.release_date?.slice(0, 4)}</span>
+            <span>
+              {data.release_date?.slice(0, 4)}
+            </span>
 
             {data.genres?.map((g: any) => (
               <span
@@ -86,46 +101,98 @@ function MovieDetails() {
             ⭐ {data.vote_average?.toFixed(1)}
           </div>
 
-          {/* FAVORITE BUTTON */}
-          <button
-            onClick={() => {
-              if (!user) {
-                alert("Please login first");
-                return;
-              }
+          {/* ACTION BUTTONS */}
+          <div className="flex flex-wrap gap-3 mt-4">
 
-              toggleFavorite({
-                id: data.id,
-                title: data.title,
-                poster: data.poster_path,
-                release_date: data.release_date,
-                rating: data.vote_average,
-              });
-            }}
-            className={`px-5 py-2 rounded-lg mt-4 w-fit transition ${
-              favorite
-                ? "bg-red-500 text-white"
-                : "bg-purple-500 text-white hover:bg-purple-600"
-            }`}
-          >
-            {favorite ? "❤️ Added to Favorites" : "Add to Favorite"}
-          </button>
+            {/* FAVORITE */}
+            <button
+              onClick={() => {
+                if (!user) {
+                  alert("Please login first");
+                  return;
+                }
+
+                toggleFavorite({
+                  id: data.id,
+                  title: data.title,
+                  poster: data.poster_path,
+                  release_date:
+                    data.release_date,
+                  rating:
+                    data.vote_average,
+                });
+              }}
+              className={`px-5 py-2 rounded-lg transition ${
+                favorite
+                  ? "bg-red-500 text-white"
+                  : "bg-purple-500 text-white hover:bg-purple-600"
+              }`}
+            >
+              {favorite
+                ? "❤️ Added to Favorites"
+                : "❤️ Add to Favorite"}
+            </button>
+
+            {/* WATCHLIST */}
+            <button
+              onClick={() => {
+                if (!user) {
+                  alert(
+                    "Please login first"
+                  );
+                  return;
+                }
+
+                toggleWatchList({
+                  id: data.id,
+                  title: data.title,
+                  poster:
+                    data.poster_path,
+                  release_date:
+                    data.release_date,
+                  rating:
+                    data.vote_average,
+                });
+              }}
+              className={`flex items-center gap-2 px-5 py-2 rounded-lg transition ${
+                watchListed
+                  ? "bg-blue-500 text-white"
+                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+              }`}
+            >
+              <Bookmark size={18} />
+
+              {watchListed
+                ? "Added to WatchList"
+                : "Add to WatchList"}
+            </button>
+
+          </div>
 
           {/* Overview */}
-          <h2 className="text-lg font-bold mt-4">Overview</h2>
+          <h2 className="text-lg font-bold mt-4">
+            Overview
+          </h2>
+
           <p className="text-gray-600 text-sm leading-relaxed mt-2">
             {data.overview}
           </p>
+
         </div>
       </div>
 
       {/* CAST */}
       <div className="mt-10">
-        <h2 className="text-lg font-bold mb-4">Cast</h2>
+        <h2 className="text-lg font-bold mb-4">
+          Cast
+        </h2>
 
         <div className="flex gap-4 flex-wrap">
           {castData?.cast
-            ?.filter((actor: any) => actor.profile_path)
+            ?.filter(
+              (actor: any) =>
+                actor.profile_path
+            )
             ?.slice(0, 6)
             .map((actor: any) => (
               <div
@@ -136,7 +203,10 @@ function MovieDetails() {
                   src={`https://image.tmdb.org/t/p/w200${actor.profile_path}`}
                   className="w-[70px] h-[70px] rounded-lg object-cover mx-auto"
                 />
-                <p className="text-xs mt-1">{actor.name}</p>
+
+                <p className="text-xs mt-1">
+                  {actor.name}
+                </p>
               </div>
             ))}
         </div>
@@ -166,7 +236,10 @@ function MovieDetails() {
                 </p>
 
                 <p className="text-[11px] text-gray-400">
-                  {movie.release_date?.slice(0, 4)}
+                  {movie.release_date?.slice(
+                    0,
+                    4
+                  )}
                 </p>
               </div>
             ))}

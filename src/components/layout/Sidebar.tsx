@@ -6,11 +6,21 @@ import {
   User,
 } from "lucide-react";
 
-import { useNavigate } from "react-router-dom";
+type Section =
+  | "overview"
+  | "watchlist"
+  | "favorites"
+  | "preferences";
 
-export default function Sidebar() {
-  const navigate = useNavigate();
+type SidebarProps = {
+  section: Section;
+  setSection: (s: Section) => void;
+};
 
+export default function Sidebar({
+  section,
+  setSection,
+}: SidebarProps) {
   return (
     <aside className="w-[260px] min-h-screen border-r border-gray-200 bg-white px-6 py-8">
 
@@ -30,47 +40,41 @@ export default function Sidebar() {
 
         <SidebarItem
           icon={<House size={20} />}
-          title="Home"
-          onClick={() => navigate("/")}
-        />
-
-        <SidebarItem
-          icon={<Clapperboard size={20} />}
-          title="Movies"
-          onClick={() => navigate("/movies")}
+          title="Overview"
+          active={section === "overview"}
+          onClick={() => setSection("overview")}
         />
 
         <SidebarItem
           icon={<Bookmark size={20} />}
           title="Watchlist"
-          onClick={() => navigate("/watchlist")}
+          active={section === "watchlist"}
+          onClick={() => setSection("watchlist")}
         />
 
         <SidebarItem
           icon={<Heart size={20} />}
           title="Favorites"
-          onClick={() => navigate("/favorite")}
+          active={section === "favorites"}
+          onClick={() => setSection("favorites")}
         />
       </div>
 
       {/* Bottom */}
       <div className="mt-10">
-
         <SidebarItem
           icon={<User size={20} />}
-          title="Profile"
-          onClick={() => navigate("/profile")}
+          title="Profile Settings"
+          active={section === "preferences"}
+          onClick={() => setSection("preferences")}
         />
-
       </div>
 
     </aside>
   );
 }
 
-/* =========================
-   👇 مهم: همین پایین فایل
-   ========================= */
+/* ===== ITEM ===== */
 
 type SidebarItemProps = {
   icon: React.ReactNode;
