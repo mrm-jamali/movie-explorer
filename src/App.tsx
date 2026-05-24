@@ -1,7 +1,9 @@
 import { Routes, Route } from "react-router-dom";
 import { HashRouter } from "react-router-dom";
 
-import MainLayout from "./layout/MainLayout";
+
+import SiteLayout from "./components/layout/SiteLayout";
+
 
 import HomePage from "./pages/HomePage";
 import MovieDetails from "./pages/MovieDetails";
@@ -23,37 +25,70 @@ function App() {
       <AuthProvider>
         <FavoriteProvider>
           <WatchListProvider>
-            <MainLayout>
-              <Routes>
-                {/* عمومی */}
-                <Route path="/" element={<HomePage />} />
-                <Route path="/movies" element={<MoviesList />} />
-                <Route path="/movie/:id" element={<MovieDetails />} />
 
-                {/* Auth */}
-                <Route path="/login" element={<LoginPage />} />
-                <Route path="/register" element={<RegisterPage />} />
+            <Routes>
 
-                {/* محافظت‌شده */}
-                <Route
-                  path="/profile"
-                  element={
-                    <ProtectedRoute>
-                      <ProfilePage />
-                    </ProtectedRoute>
-                  }
-                />
+              {/* PUBLIC */}
+              <Route
+                path="/"
+                element={
+                  <SiteLayout>
+                    <HomePage />
+                  </SiteLayout>
+                }
+              />
 
-                <Route
-                  path="/favorite"
-                  element={
-                    <ProtectedRoute>
-                      <Favorite />
-                    </ProtectedRoute>
-                  }
-                />
-              </Routes>
-            </MainLayout>
+              <Route
+                path="/movies"
+                element={
+                  <SiteLayout>
+                    <MoviesList />
+                  </SiteLayout>
+                }
+              />
+
+              <Route
+                path="/movie/:id"
+                element={
+                  <SiteLayout>
+                    <MovieDetails />
+                  </SiteLayout>
+                }
+              />
+
+              {/* AUTH */}
+              <Route
+                path="/login"
+                element={<LoginPage />}
+              />
+
+              <Route
+                path="/register"
+                element={<RegisterPage />}
+              />
+
+              {/* PROFILE */}
+              <Route
+                path="/profile"
+                element={
+                  <ProtectedRoute>
+                    <ProfilePage />
+                  </ProtectedRoute>
+                }
+              />
+
+              {/* FAVORITE */}
+              <Route
+                path="/favorite"
+                element={
+                  <ProtectedRoute>
+                    <Favorite />
+                  </ProtectedRoute>
+                }
+              />
+
+            </Routes>
+
           </WatchListProvider>
         </FavoriteProvider>
       </AuthProvider>

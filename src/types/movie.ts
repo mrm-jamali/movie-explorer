@@ -31,3 +31,9 @@ export type GenresResponse = {
 };
 
 
+export type MovieItemProps = {
+  movie: Movie;
+  index: number;
+  items: Movie[];
+  toggleWatchList: (movie: Movie) => void;
+};

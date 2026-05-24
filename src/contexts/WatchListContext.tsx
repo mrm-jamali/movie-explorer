@@ -3,6 +3,7 @@ import {
   useContext,
   useState,
   ReactNode,
+  useEffect,
 } from "react";
 
 interface WatchMovie {
@@ -35,13 +36,33 @@ export function WatchListProvider({
 }: {
   children: ReactNode;
 }) {
+
+  // LOAD FROM LOCAL STORAGE
   const [watchList, setWatchList] =
-    useState<WatchMovie[]>([]);
+    useState<WatchMovie[]>(() => {
+
+      const saved =
+        localStorage.getItem("watchList");
+
+      return saved
+        ? JSON.parse(saved)
+        : [];
+    });
+
+  // SAVE TO LOCAL STORAGE
+  useEffect(() => {
+    localStorage.setItem(
+      "watchList",
+      JSON.stringify(watchList)
+    );
+  }, [watchList]);
 
   const toggleWatchList = (
     movie: WatchMovie
   ) => {
+
     setWatchList((prev) => {
+
       const exists = prev.some(
         (item) => item.id === movie.id
       );
@@ -60,6 +81,7 @@ export function WatchListProvider({
   const isInWatchList = (
     id: number
   ) => {
+
     return watchList.some(
       (movie) => movie.id === id
     );
@@ -79,6 +101,7 @@ export function WatchListProvider({
 }
 
 export function useWatchList() {
+
   const context = useContext(
     WatchListContext
   );

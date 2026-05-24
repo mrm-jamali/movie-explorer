@@ -72,13 +72,20 @@ export const fetchGenres = async (): Promise<GenresResponse> => {
 };
 
 
-export const fetchSearchMovies = async (query: string) => {
+
+export const fetchSearchMovies = async (
+  query: string
+) => {
   const res = await fetch(
-    `${BASE_URL}/search/movie?query=${query}`
+    `${BASE_URL}/search/movie?api_key=${API_KEY}&query=${query}`
   );
+
+  if (!res.ok) {
+    throw new Error("Failed to search movies");
+  }
+
   return res.json();
 };
-
 
 export const fetchMovieDetails = async (id: string) => {
   const res = await fetch(
@@ -103,5 +110,20 @@ export const fetchSimilarMovies = async (id: string) => {
   );
 
   if (!res.ok) throw new Error("Failed to fetch similar movies");
+  return res.json();
+};
+
+export const fetchMovieVideos = async (
+  id: number
+) => {
+
+  const res = await fetch(
+    `${BASE_URL}/movie/${id}/videos?api_key=${API_KEY}`
+  );
+
+  if (!res.ok) {
+    throw new Error("Failed to fetch videos");
+  }
+
   return res.json();
 };

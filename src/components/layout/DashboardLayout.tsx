@@ -2,7 +2,7 @@ type MainLayoutProps = {
   children: React.ReactNode;
 };
 
-export default function MainLayout({
+export default function DashboardLayout({
   children,
 }: MainLayoutProps) {
   return (
