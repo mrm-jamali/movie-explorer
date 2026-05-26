@@ -6,6 +6,7 @@ import {
   User,
   Palette,
 } from "lucide-react";
+import { useState } from "react";
 
 type Section =
   | "overview"
@@ -24,6 +25,7 @@ export default function Sidebar({
   section,
   setSection,
 }: SidebarProps) {
+  const [openTheme, setOpenTheme] = useState(false);
   return (
     <aside
       className="
@@ -113,12 +115,59 @@ export default function Sidebar({
 
         <div className="mb-5 border-t border-gray-200" />
 
-        <SidebarItem
-          icon={<Palette size={20} />}
-          title="Theme"
-          active={section === "theme"}
-          onClick={() => setSection("theme")}
-        />
+        <div>
+  <SidebarItem
+    icon={<Palette size={20} />}
+    title="Theme"
+    active={section === "theme"}
+    onClick={() => setOpenTheme(!openTheme)}
+  />
+
+  {openTheme && (
+    <div className="ml-4 mt-2 space-y-1">
+
+      <button
+        className="
+          w-full text-left
+          px-4 py-2
+          text-sm
+          rounded-xl
+          text-gray-600
+          hover:bg-gray-100
+        "
+      >
+        🌞 Light
+      </button>
+
+      <button
+        className="
+          w-full text-left
+          px-4 py-2
+          text-sm
+          rounded-xl
+          text-gray-600
+          hover:bg-gray-100
+        "
+      >
+        🌙 Dark
+      </button>
+
+      <button
+        className="
+          w-full text-left
+          px-4 py-2
+          text-sm
+          rounded-xl
+          text-gray-600
+          hover:bg-gray-100
+        "
+      >
+        💻 System
+      </button>
+
+    </div>
+  )}
+</div>
 
       </div>
     </aside>

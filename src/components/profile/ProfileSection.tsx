@@ -8,16 +8,20 @@ import {
   Bookmark,
 } from "lucide-react";
 import { useAuth } from "../../contexts/AuthContext";
-
+import { useState } from "react";
+import EditProfileModal from "./EditProfileModal";
 
 export default function ProfileSection() {
   const { user } = useAuth();
+
+  const [openEditModal, setOpenEditModal] =
+    useState(false);
+
   return (
     <div className="p-6 md:p-8">
 
       {/* PAGE HEADER */}
       <div className="mb-8">
-
         <h1
           className="
             text-[34px]
@@ -39,7 +43,6 @@ export default function ProfileSection() {
         >
           Manage your personal information and preferences
         </p>
-
       </div>
 
       {/* PROFILE CARD */}
@@ -52,13 +55,11 @@ export default function ProfileSection() {
           shadow-sm
         "
       >
-
         <div className="flex items-start justify-between">
 
           {/* LEFT */}
           <div className="flex items-center gap-6">
 
-            {/* AVATAR */}
             <img
               src={user?.avatar}
               alt="avatar"
@@ -70,12 +71,9 @@ export default function ProfileSection() {
               "
             />
 
-            {/* INFO */}
             <div>
 
-              {/* NAME */}
               <div className="flex items-center gap-3">
-
                 <h2
                   className="
                     text-[28px]
@@ -84,7 +82,7 @@ export default function ProfileSection() {
                     text-[#111827]
                   "
                 >
-                 {user?.username}
+                  {user?.username}
                 </h2>
 
                 <span
@@ -99,10 +97,8 @@ export default function ProfileSection() {
                 >
                   Premium
                 </span>
-
               </div>
 
-              {/* META */}
               <div
                 className="
                   mt-4
@@ -110,30 +106,21 @@ export default function ProfileSection() {
                   text-[#6B7280]
                 "
               >
-
                 <div className="flex items-center gap-2">
-
                   <MapPin size={16} />
-
                   <span className="text-[14px]">
-                   {user?.location}
+                    {user?.location}
                   </span>
-
                 </div>
 
                 <div className="flex items-center gap-2">
-
                   <Calendar size={16} />
-
                   <span className="text-[14px]">
-                  Joined {user?.joined}
+                    Joined {user?.joined}
                   </span>
-
                 </div>
-
               </div>
 
-              {/* BIO */}
               <p
                 className="
                   mt-5
@@ -148,11 +135,11 @@ export default function ProfileSection() {
               </p>
 
             </div>
-
           </div>
 
           {/* EDIT BUTTON */}
           <button
+            onClick={() => setOpenEditModal(true)}
             className="
               h-[48px]
               px-5
@@ -167,15 +154,11 @@ export default function ProfileSection() {
               transition
             "
           >
-
             <Pencil size={16} />
-
             Edit Profile
-
           </button>
 
         </div>
-
       </div>
 
       {/* STATS */}
@@ -195,48 +178,28 @@ export default function ProfileSection() {
         <div className="grid grid-cols-4 gap-5">
 
           <StatCard
-            icon={
-              <Bookmark
-                size={20}
-                className="text-[#7C3AED]"
-              />
-            }
+            icon={<Bookmark size={20} className="text-[#7C3AED]" />}
             value="24"
             label="In Watchlist"
             bg="bg-[#F3E8FF]"
           />
 
           <StatCard
-            icon={
-              <Heart
-                size={20}
-                className="text-[#EC4899]"
-              />
-            }
+            icon={<Heart size={20} className="text-[#EC4899]" />}
             value="56"
             label="Favorites"
             bg="bg-[#FCE7F3]"
           />
 
           <StatCard
-            icon={
-              <Eye
-                size={20}
-                className="text-[#0EA5E9]"
-              />
-            }
+            icon={<Eye size={20} className="text-[#0EA5E9]" />}
             value="18"
             label="Watched"
             bg="bg-[#E0F2FE]"
           />
 
           <StatCard
-            icon={
-              <Star
-                size={20}
-                className="text-[#22C55E]"
-              />
-            }
+            icon={<Star size={20} className="text-[#22C55E]" />}
             value="4.8"
             label="Avg Rating"
             bg="bg-[#DCFCE7]"
@@ -249,16 +212,9 @@ export default function ProfileSection() {
       {/* RECENT ACTIVITY */}
       <section className="mt-10">
 
-        {/* HEADER */}
         <div className="mb-5 flex items-center justify-between">
 
-          <h3
-            className="
-              text-[22px]
-              font-semibold
-              text-[#111827]
-            "
-          >
+          <h3 className="text-[22px] font-semibold">
             Recent Activity
           </h3>
 
@@ -267,8 +223,6 @@ export default function ProfileSection() {
               text-[14px]
               font-medium
               text-[#7C3AED]
-              hover:opacity-70
-              transition
             "
           >
             View All Activity
@@ -276,7 +230,6 @@ export default function ProfileSection() {
 
         </div>
 
-        {/* LIST */}
         <div
           className="
             overflow-hidden
@@ -285,7 +238,6 @@ export default function ProfileSection() {
             bg-white
           "
         >
-
           <ActivityItem
             image="https://image.tmdb.org/t/p/w500/8b8R8l88Qje9dn9OE8PY05Nxl1X.jpg"
             title="Added Dune: Part Two to watchlist"
@@ -298,32 +250,23 @@ export default function ProfileSection() {
             rating="9.0"
             time="1 day ago"
           />
-
-          <ActivityItem
-            image="https://image.tmdb.org/t/p/w500/uOOtwVbSr4QDjAGIifLDwpb2Pdl.jpg"
-            title="Added Stranger Things to favorites"
-            favorite
-            time="2 days ago"
-          />
-
-          <ActivityItem
-            image="https://image.tmdb.org/t/p/w500/oYuLEt3zVCKq57qu2F8dT7NIa6f.jpg"
-            title="Watched Inception"
-            rating="8.8"
-            time="3 days ago"
-          />
-
         </div>
 
       </section>
+
+      {/* MODAL */}
+      <EditProfileModal
+        isOpen={openEditModal}
+        onClose={() => setOpenEditModal(false)}
+      />
 
     </div>
   );
 }
 
-/* =========================================
-   STAT CARD
-========================================= */
+/* =====================================
+STAT CARD
+===================================== */
 
 type StatCardProps = {
   icon: React.ReactNode;
@@ -339,16 +282,7 @@ function StatCard({
   bg,
 }: StatCardProps) {
   return (
-    <div
-      className="
-        rounded-[24px]
-        border border-gray-200
-        bg-white
-        p-5
-        shadow-sm
-      "
-    >
-
+    <div className="rounded-[24px] border bg-white p-5 shadow-sm">
       <div className="flex items-center gap-4">
 
         <div
@@ -363,39 +297,23 @@ function StatCard({
         </div>
 
         <div>
-
-          <h4
-            className="
-              text-[28px]
-              leading-none
-              font-semibold
-              text-[#111827]
-            "
-          >
+          <h4 className="text-[28px] font-semibold">
             {value}
           </h4>
 
-          <p
-            className="
-              mt-1.5
-              text-[13px]
-              text-[#6B7280]
-            "
-          >
+          <p className="text-[13px] text-[#6B7280]">
             {label}
           </p>
-
         </div>
 
       </div>
-
     </div>
   );
 }
 
-/* =========================================
-   ACTIVITY ITEM
-========================================= */
+/* =====================================
+ACTIVITY ITEM
+===================================== */
 
 type ActivityItemProps = {
   image: string;
@@ -410,21 +328,10 @@ function ActivityItem({
   title,
   time,
   rating,
-  favorite,
 }: ActivityItemProps) {
   return (
-    <div
-      className="
-        flex items-center justify-between
-        border-b border-gray-100
-        px-6 py-4
-        last:border-b-0
-        hover:bg-gray-50
-        transition
-      "
-    >
+    <div className="flex items-center justify-between px-6 py-4">
 
-      {/* LEFT */}
       <div className="flex items-center gap-4">
 
         <img
@@ -440,60 +347,20 @@ function ActivityItem({
 
         <div className="flex items-center gap-3">
 
-          <h4
-            className="
-              text-[16px]
-              font-medium
-              text-[#111827]
-            "
-          >
+          <h4 className="font-medium">
             {title}
           </h4>
 
-          {/* RATING */}
           {rating && (
-            <div className="flex items-center gap-1.5">
-
+            <div className="flex items-center gap-1">
               <Star
-                size={16}
+                size={14}
                 className="
                   fill-[#FBBF24]
                   text-[#FBBF24]
                 "
               />
-
-              <span
-                className="
-                  text-[15px]
-                  font-semibold
-                  text-[#111827]
-                "
-              >
-                {rating}
-              </span>
-
-            </div>
-          )}
-
-          {/* FAVORITE */}
-          {favorite && (
-            <div
-              className="
-                flex h-8 w-8
-                items-center justify-center
-                rounded-full
-                bg-[#FCE7F3]
-              "
-            >
-
-              <Heart
-                size={14}
-                className="
-                  fill-[#EC4899]
-                  text-[#EC4899]
-                "
-              />
-
+              {rating}
             </div>
           )}
 
@@ -501,13 +368,7 @@ function ActivityItem({
 
       </div>
 
-      {/* TIME */}
-      <span
-        className="
-          text-[13px]
-          text-[#6B7280]
-        "
-      >
+      <span className="text-[13px] text-[#6B7280]">
         {time}
       </span>
 
