@@ -1,10 +1,10 @@
 import {
   createContext,
   useContext,
-  useState,
   ReactNode,
-  useEffect,
 } from "react";
+
+import { useAuth } from "./AuthContext";
 
 interface WatchMovie {
   id: number;
@@ -15,77 +15,59 @@ interface WatchMovie {
 }
 
 interface WatchListContextType {
-  watchList: WatchMovie[];
-
-  toggleWatchList: (
-    movie: WatchMovie
-  ) => void;
-
-  isInWatchList: (
-    id: number
-  ) => boolean;
+  watchList: number[];
+  toggleWatchList: (movie: WatchMovie) => void;
+  isInWatchList: (id: number) => boolean;
 }
 
 const WatchListContext =
-  createContext<
-    WatchListContextType | undefined
-  >(undefined);
+  createContext<WatchListContextType | undefined>(undefined);
 
 export function WatchListProvider({
   children,
 }: {
   children: ReactNode;
 }) {
+  const { user, syncCurrentUser } = useAuth();
 
-  // LOAD FROM LOCAL STORAGE
-  const [watchList, setWatchList] =
-    useState<WatchMovie[]>(() => {
+  const watchList = user?.watchlist || [];
 
-      const saved =
-        localStorage.getItem("watchList");
+  const toggleWatchList = (movie: WatchMovie) => {
+    if (!user) return;
 
-      return saved
-        ? JSON.parse(saved)
-        : [];
-    });
+    const exists = user.watchlist.includes(movie.id);
 
-  // SAVE TO LOCAL STORAGE
-  useEffect(() => {
-    localStorage.setItem(
-      "watchList",
-      JSON.stringify(watchList)
-    );
-  }, [watchList]);
+    const updatedWatchlist = exists
+      ? user.watchlist.filter((id) => id !== movie.id)
+      : [...user.watchlist, movie.id];
 
-  const toggleWatchList = (
-    movie: WatchMovie
-  ) => {
+    // ✅ safe activities
+    const prevActivities = user.activities || [];
 
-    setWatchList((prev) => {
+    const newActivity = {
+      id: crypto.randomUUID(),
+      type: "watchlist" as const,
+      movieId: movie.id,
+      title: movie.title,
+      poster: movie.poster,
+      time: new Date().toISOString(),
+    };
 
-      const exists = prev.some(
-        (item) => item.id === movie.id
-      );
+    const updatedActivities = exists
+      ? prevActivities.filter(
+          (a) => a.movieId !== movie.id
+        )
+      : [newActivity, ...prevActivities];
 
-      if (exists) {
-        return prev.filter(
-          (item) =>
-            item.id !== movie.id
-        );
-      }
-
-      return [...prev, movie];
+    syncCurrentUser({
+      ...user,
+      watchlist: updatedWatchlist,
+      activities: updatedActivities,
     });
   };
 
-  const isInWatchList = (
-    id: number
-  ) => {
-
-    return watchList.some(
-      (movie) => movie.id === id
-    );
-  };
+  const isInWatchList = (id: number) =>
+    user?.watchlist.includes(id) ?? false;
 
   return (
     <WatchListContext.Provider
@@ -101,10 +83,7 @@ export function WatchListProvider({
 }
 
 export function useWatchList() {
-
-  const context = useContext(
-    WatchListContext
-  );
+  const context = useContext(WatchListContext);
 
   if (!context) {
     throw new Error(

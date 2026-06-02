@@ -1,16 +1,9 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext } from "react";
+import type { Movie } from "../types/movie";
 import { useAuth } from "./AuthContext";
 
-export type Movie = {
-  id: number;
-  title: string;
-  poster: string;
-  release_date: string;
-  overview?: string;
-};
-
 type FavoriteContextType = {
-  favorites: Movie[];
+  favorites: number[];
   toggleFavorite: (movie: Movie) => void;
   removeFavorite: (id: number) => void;
   isFavorite: (id: number) => boolean;
@@ -18,81 +11,72 @@ type FavoriteContextType = {
 
 const FavoriteContext = createContext<FavoriteContextType | null>(null);
 
-export function FavoriteProvider({ children }: { children: React.ReactNode }) {
-  const { user } = useAuth();
+export function FavoriteProvider({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const { user, syncCurrentUser } = useAuth();
 
-  const [favorites, setFavorites] = useState<Movie[]>([]);
-
-  // 📥 Load favorites from current user
-  useEffect(() => {
-    if (!user) {
-      setFavorites([]);
-      return;
-    }
-
-    const storedFavorites = user.favorites || [];
-    setFavorites(storedFavorites as any);
-  }, [user]);
-
-  // 🔄 Sync helper to localStorage (currentUser + users)
-  const syncUser = (updatedUser: any) => {
-    localStorage.setItem("currentUser", JSON.stringify(updatedUser));
-
-    const users = JSON.parse(localStorage.getItem("users") || "[]");
-
-    const updatedUsers = users.map((u: any) =>
-      u.id === updatedUser.id ? updatedUser : u
-    );
-
-    localStorage.setItem("users", JSON.stringify(updatedUsers));
-  };
-
-  // ⭐ add/remove favorite
+  /* =========================
+     TOGGLE FAVORITE
+  ========================= */
   const toggleFavorite = (movie: Movie) => {
     if (!user) return;
 
     const exists = user.favorites.includes(movie.id);
 
     const updatedFavorites = exists
-      ? user.favorites.filter((id: number) => id !== movie.id)
+      ? user.favorites.filter((id) => id !== movie.id)
       : [...user.favorites, movie.id];
 
-    const updatedUser = {
-      ...user,
-      favorites: updatedFavorites,
+    /* =========================
+       NEW NOTIFICATION
+    ========================= */
+    const newNotification = {
+      id: crypto.randomUUID(),
+      type: "favorite" as const,
+      title: "Favorites updated",
+      message: exists
+        ? `Removed ${movie.title} from favorites`
+        : `Added ${movie.title} to favorites`,
+      movieId: movie.id,
+      time: new Date().toISOString(),
+      read: false,
     };
 
-    syncUser(updatedUser);
-
-    setFavorites(updatedFavorites as any);
+    syncCurrentUser({
+      ...user,
+      favorites: updatedFavorites,
+      notifications: [
+        newNotification,
+        ...(user.notifications || []),
+      ],
+    });
   };
 
-  // ❌ remove directly
+  /* =========================
+     REMOVE FAVORITE (manual)
+  ========================= */
   const removeFavorite = (id: number) => {
     if (!user) return;
 
-    const updatedFavorites = user.favorites.filter(
-      (movieId: number) => movieId !== id
-    );
-
-    const updatedUser = {
+    syncCurrentUser({
       ...user,
-      favorites: updatedFavorites,
-    };
-
-    syncUser(updatedUser);
-
-    setFavorites(updatedFavorites as any);
+      favorites: user.favorites.filter((m) => m !== id),
+    });
   };
 
-  // ✅ check favorite
+  /* =========================
+     CHECK FAVORITE
+  ========================= */
   const isFavorite = (id: number) =>
     user?.favorites.includes(id) ?? false;
 
   return (
     <FavoriteContext.Provider
       value={{
-        favorites,
+        favorites: user?.favorites || [],
         toggleFavorite,
         removeFavorite,
         isFavorite,
@@ -103,12 +87,12 @@ export function FavoriteProvider({ children }: { children: React.ReactNode }) {
   );
 }
 
-export const useFavorites = () => {
+export function useFavorites() {
   const ctx = useContext(FavoriteContext);
 
   if (!ctx) {
-    throw new Error("useFavorites must be inside FavoriteProvider");
+    throw new Error("useFavorites must be inside provider");
   }
 
   return ctx;
-};
+}

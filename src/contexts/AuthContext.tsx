@@ -8,9 +8,20 @@ import {
 import type { ReactNode } from "react";
 import type { User } from "../types/user";
 
+type Notification = {
+  id: string;
+  type: "favorite" | "watchlist";
+  title: string;
+  message: string;
+  movieId: number;
+  time: string;
+  read: boolean;
+};
+
 type AuthContextType = {
   user: User | null;
   isAuthenticated: boolean;
+  loading: boolean;
 
   login: (username: string, password: string) => boolean;
   logout: () => void;
@@ -20,24 +31,69 @@ type AuthContextType = {
     email: string,
     password: string
   ) => boolean;
+
+  syncCurrentUser: (user: User) => void;
 };
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  /* LOAD USER */
+  /* =========================
+     LOAD USER
+  ========================= */
   useEffect(() => {
-    const storedUser = localStorage.getItem("currentUser");
+    const stored = localStorage.getItem("currentUser");
 
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
+    if (stored) {
+      try {
+        const parsed = JSON.parse(stored);
+
+        setUser({
+          ...parsed,
+          activities: parsed.activities || [],
+          notifications: parsed.notifications || [],
+        });
+      } catch {
+        localStorage.removeItem("currentUser");
+      }
     }
+
+    setLoading(false);
   }, []);
 
-  /* REGISTER */
-  const register = (username: string, email: string, password: string) => {
+  /* =========================
+     SYNC USER
+  ========================= */
+  const syncCurrentUser = (updatedUser: User) => {
+    setUser(updatedUser);
+
+    localStorage.setItem(
+      "currentUser",
+      JSON.stringify(updatedUser)
+    );
+
+    const users: User[] = JSON.parse(
+      localStorage.getItem("users") || "[]"
+    );
+
+    const updatedUsers = users.map((u) =>
+      u.id === updatedUser.id ? updatedUser : u
+    );
+
+    localStorage.setItem("users", JSON.stringify(updatedUsers));
+  };
+
+  /* =========================
+     REGISTER
+  ========================= */
+  const register = (
+    username: string,
+    email: string,
+    password: string
+  ) => {
     if (!username || !email || !password) return false;
 
     const users: User[] = JSON.parse(
@@ -45,7 +101,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     );
 
     const exists = users.some((u) => u.username === username);
-
     if (exists) return false;
 
     const newUser: User = {
@@ -58,6 +113,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       joined: new Date().toISOString(),
       favorites: [],
       watchlist: [],
+      watched: [],
+      activities: [],
+      notifications: [],
     };
 
     users.push(newUser);
@@ -70,10 +128,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return true;
   };
 
-  /* LOGIN */
+  /* =========================
+     LOGIN
+  ========================= */
   const login = (username: string, password: string) => {
-    if (!username || !password) return false;
-
     const users: User[] = JSON.parse(
       localStorage.getItem("users") || "[]"
     );
@@ -86,17 +144,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     if (!foundUser) return false;
 
-    setUser(foundUser);
+    const safeUser: User = {
+      ...foundUser,
+      activities: foundUser.activities || [],
+      notifications: foundUser.notifications || [],
+    };
+
+    setUser(safeUser);
 
     localStorage.setItem(
       "currentUser",
-      JSON.stringify(foundUser)
+      JSON.stringify(safeUser)
     );
 
     return true;
   };
 
-  /* LOGOUT */
+  /* =========================
+     LOGOUT
+  ========================= */
   const logout = () => {
     setUser(null);
     localStorage.removeItem("currentUser");
@@ -107,9 +173,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       value={{
         user,
         isAuthenticated: !!user,
+        loading,
         login,
         logout,
-        register, // ✅ حالا واقعی شد
+        register,
+        syncCurrentUser,
       }}
     >
       {children}
@@ -118,11 +186,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 }
 
 export function useAuth() {
-  const context = useContext(AuthContext);
-
-  if (!context) {
-    throw new Error("useAuth must be used inside AuthProvider");
-  }
-
-  return context;
+  const ctx = useContext(AuthContext);
+  if (!ctx) throw new Error("useAuth must be used inside provider");
+  return ctx;
 }
