@@ -6,7 +6,6 @@ export type Movie = {
   title: string;
   poster: string;
   release_date: string;
-  rating?: number;
   overview?: string;
 };
 
@@ -19,72 +18,85 @@ type FavoriteContextType = {
 
 const FavoriteContext = createContext<FavoriteContextType | null>(null);
 
-export function FavoriteProvider({ children }: any) {
+export function FavoriteProvider({ children }: { children: React.ReactNode }) {
   const { user } = useAuth();
+
   const [favorites, setFavorites] = useState<Movie[]>([]);
 
-  // ✅ Load
+  // 📥 Load favorites from current user
   useEffect(() => {
     if (!user) {
       setFavorites([]);
       return;
     }
 
-    const stored = localStorage.getItem(`favorites-${user.username}`);
-    setFavorites(stored ? JSON.parse(stored) : []);
+    const storedFavorites = user.favorites || [];
+    setFavorites(storedFavorites as any);
   }, [user]);
 
-  // ✅ Sync helper
-  const sync = (data: Movie[]) => {
-    if (!user) return;
+  // 🔄 Sync helper to localStorage (currentUser + users)
+  const syncUser = (updatedUser: any) => {
+    localStorage.setItem("currentUser", JSON.stringify(updatedUser));
 
-    setFavorites(data);
-    localStorage.setItem(
-      `favorites-${user.username}`,
-      JSON.stringify(data)
+    const users = JSON.parse(localStorage.getItem("users") || "[]");
+
+    const updatedUsers = users.map((u: any) =>
+      u.id === updatedUser.id ? updatedUser : u
     );
+
+    localStorage.setItem("users", JSON.stringify(updatedUsers));
   };
 
-  // ⭐ add/remove
+  // ⭐ add/remove favorite
   const toggleFavorite = (movie: Movie) => {
     if (!user) return;
 
-    setFavorites((prev) => {
-      const exists = prev.some((m) => m.id === movie.id);
+    const exists = user.favorites.includes(movie.id);
 
-      const updated = exists
-        ? prev.filter((m) => m.id !== movie.id)
-        : [...prev, movie];
+    const updatedFavorites = exists
+      ? user.favorites.filter((id: number) => id !== movie.id)
+      : [...user.favorites, movie.id];
 
-      localStorage.setItem(
-        `favorites-${user.username}`,
-        JSON.stringify(updated)
-      );
+    const updatedUser = {
+      ...user,
+      favorites: updatedFavorites,
+    };
 
-      return updated;
-    });
+    syncUser(updatedUser);
+
+    setFavorites(updatedFavorites as any);
   };
 
-  // ❌ remove مستقیم (برای لیست)
+  // ❌ remove directly
   const removeFavorite = (id: number) => {
-    setFavorites((prev) => {
-      const updated = prev.filter((m) => m.id !== id);
+    if (!user) return;
 
-      localStorage.setItem(
-        `favorites-${user.username}`,
-        JSON.stringify(updated)
-      );
+    const updatedFavorites = user.favorites.filter(
+      (movieId: number) => movieId !== id
+    );
 
-      return updated;
-    });
+    const updatedUser = {
+      ...user,
+      favorites: updatedFavorites,
+    };
+
+    syncUser(updatedUser);
+
+    setFavorites(updatedFavorites as any);
   };
 
+  // ✅ check favorite
   const isFavorite = (id: number) =>
-    favorites.some((m) => m.id === id);
+    user?.favorites.includes(id) ?? false;
 
   return (
     <FavoriteContext.Provider
-      value={{ favorites, toggleFavorite, removeFavorite, isFavorite }}
+      value={{
+        favorites,
+        toggleFavorite,
+        removeFavorite,
+        isFavorite,
+      }}
     >
       {children}
     </FavoriteContext.Provider>
@@ -94,7 +106,9 @@ export function FavoriteProvider({ children }: any) {
 export const useFavorites = () => {
   const ctx = useContext(FavoriteContext);
 
-  if (!ctx) throw new Error("useFavorites must be inside provider");
+  if (!ctx) {
+    throw new Error("useFavorites must be inside FavoriteProvider");
+  }
 
   return ctx;
 };

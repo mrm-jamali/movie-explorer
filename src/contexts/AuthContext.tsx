@@ -6,76 +6,91 @@ import {
 } from "react";
 
 import type { ReactNode } from "react";
-
-type User = {
-  username: string;
-  avatar: string;
-  location: string;
-  joined: string;
-};
+import type { User } from "../types/user";
 
 type AuthContextType = {
   user: User | null;
-
   isAuthenticated: boolean;
 
-  login: (
+  login: (username: string, password: string) => boolean;
+  logout: () => void;
+
+  register: (
     username: string,
+    email: string,
     password: string
   ) => boolean;
-
-  logout: () => void;
 };
 
-const AuthContext =
-  createContext<AuthContextType | null>(
-    null
-  );
+const AuthContext = createContext<AuthContextType | null>(null);
 
-export function AuthProvider({
-  children,
-}: {
-  children: ReactNode;
-}) {
-
-  const [user, setUser] =
-    useState<User | null>(null);
+export function AuthProvider({ children }: { children: ReactNode }) {
+  const [user, setUser] = useState<User | null>(null);
 
   /* LOAD USER */
   useEffect(() => {
-    const storedUser =
-      localStorage.getItem("user");
+    const storedUser = localStorage.getItem("currentUser");
 
     if (storedUser) {
       setUser(JSON.parse(storedUser));
     }
   }, []);
 
-  /* LOGIN */
-  const login = (
-    username: string,
-    password: string
-  ) => {
+  /* REGISTER */
+  const register = (username: string, email: string, password: string) => {
+    if (!username || !email || !password) return false;
 
-    if (!username || !password) {
-      return false;
-    }
+    const users: User[] = JSON.parse(
+      localStorage.getItem("users") || "[]"
+    );
 
-    const loggedUser: User = {
+    const exists = users.some((u) => u.username === username);
+
+    if (exists) return false;
+
+    const newUser: User = {
+      id: crypto.randomUUID(),
       username,
-     avatar:
-  `https://i.pravatar.cc/300?u=${username}`,
-
-      location: "Tehran, Iran",
-
-      joined: "May 2024",
+      email,
+      password,
+      avatar: `https://i.pravatar.cc/300?u=${username}`,
+      location: "Tehran",
+      joined: new Date().toISOString(),
+      favorites: [],
+      watchlist: [],
     };
 
-    setUser(loggedUser);
+    users.push(newUser);
+
+    localStorage.setItem("users", JSON.stringify(users));
+    localStorage.setItem("currentUser", JSON.stringify(newUser));
+
+    setUser(newUser);
+
+    return true;
+  };
+
+  /* LOGIN */
+  const login = (username: string, password: string) => {
+    if (!username || !password) return false;
+
+    const users: User[] = JSON.parse(
+      localStorage.getItem("users") || "[]"
+    );
+
+    const foundUser = users.find(
+      (u) =>
+        u.username === username &&
+        u.password === password
+    );
+
+    if (!foundUser) return false;
+
+    setUser(foundUser);
 
     localStorage.setItem(
-      "user",
-      JSON.stringify(loggedUser)
+      "currentUser",
+      JSON.stringify(foundUser)
     );
 
     return true;
@@ -84,20 +99,17 @@ export function AuthProvider({
   /* LOGOUT */
   const logout = () => {
     setUser(null);
-
-    localStorage.removeItem("user");
+    localStorage.removeItem("currentUser");
   };
 
   return (
     <AuthContext.Provider
       value={{
         user,
-
         isAuthenticated: !!user,
-
         login,
-
         logout,
+        register, // ✅ حالا واقعی شد
       }}
     >
       {children}
@@ -106,14 +118,10 @@ export function AuthProvider({
 }
 
 export function useAuth() {
-
-  const context =
-    useContext(AuthContext);
+  const context = useContext(AuthContext);
 
   if (!context) {
-    throw new Error(
-      "useAuth must be used inside AuthProvider"
-    );
+    throw new Error("useAuth must be used inside AuthProvider");
   }
 
   return context;
