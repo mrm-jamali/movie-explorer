@@ -8,16 +8,6 @@ import {
 import type { ReactNode } from "react";
 import type { User } from "../types/user";
 
-type Notification = {
-  id: string;
-  type: "favorite" | "watchlist";
-  title: string;
-  message: string;
-  movieId: number;
-  time: string;
-  read: boolean;
-};
-
 type AuthContextType = {
   user: User | null;
   isAuthenticated: boolean;
@@ -42,7 +32,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   /* =========================
-     LOAD USER
+     LOAD USER ON REFRESH
   ========================= */
   useEffect(() => {
     const stored = localStorage.getItem("currentUser");
@@ -51,11 +41,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       try {
         const parsed = JSON.parse(stored);
 
-        setUser({
+        const safeUser: User = {
           ...parsed,
+          favorites: parsed.favorites || [],
+          watchlist: parsed.watchlist || [],
           activities: parsed.activities || [],
           notifications: parsed.notifications || [],
-        });
+        };
+
+        setUser(safeUser);
       } catch {
         localStorage.removeItem("currentUser");
       }
@@ -65,22 +59,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   /* =========================
-     SYNC USER
+     SYNC USER (MAIN FIX)
   ========================= */
   const syncCurrentUser = (updatedUser: User) => {
-    setUser(updatedUser);
+    const safeUser: User = {
+      ...updatedUser,
+      favorites: updatedUser.favorites || [],
+      watchlist: updatedUser.watchlist || [],
+      activities: updatedUser.activities || [],
+      notifications: updatedUser.notifications || [],
+    };
 
-    localStorage.setItem(
-      "currentUser",
-      JSON.stringify(updatedUser)
-    );
+    setUser(safeUser);
+
+    localStorage.setItem("currentUser", JSON.stringify(safeUser));
 
     const users: User[] = JSON.parse(
       localStorage.getItem("users") || "[]"
     );
 
     const updatedUsers = users.map((u) =>
-      u.id === updatedUser.id ? updatedUser : u
+      u.id === safeUser.id ? safeUser : u
     );
 
     localStorage.setItem("users", JSON.stringify(updatedUsers));
@@ -146,6 +145,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     const safeUser: User = {
       ...foundUser,
+      favorites: foundUser.favorites || [],
+      watchlist: foundUser.watchlist || [],
       activities: foundUser.activities || [],
       notifications: foundUser.notifications || [],
     };
@@ -185,8 +186,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   );
 }
 
+/* =========================
+   HOOK
+========================= */
 export function useAuth() {
   const ctx = useContext(AuthContext);
-  if (!ctx) throw new Error("useAuth must be used inside provider");
+
+  if (!ctx) {
+    throw new Error("useAuth must be used inside provider");
+  }
+
   return ctx;
 }

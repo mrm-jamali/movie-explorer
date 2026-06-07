@@ -3,7 +3,6 @@ import {
   Calendar,
   Pencil,
   Heart,
-
   Bookmark,
   Star, // 👈 اینو اضافه کن
 } from "lucide-react";
@@ -20,7 +19,6 @@ export default function ProfileSection() {
 
   return (
     <div className="p-6 md:p-8">
-
       {/* PAGE HEADER */}
       <div className="mb-8">
         <h1 className="text-[34px] font-bold tracking-[-0.5px] text-[#111827]">
@@ -35,10 +33,8 @@ export default function ProfileSection() {
       {/* PROFILE CARD */}
       <div className="rounded-[28px] border border-gray-200 bg-white p-7 shadow-sm">
         <div className="flex items-start justify-between">
-
           {/* LEFT */}
           <div className="flex items-center gap-6">
-
             <img
               src={user?.avatar}
               alt="avatar"
@@ -46,7 +42,6 @@ export default function ProfileSection() {
             />
 
             <div>
-
               <div className="flex items-center gap-3">
                 <h2 className="text-[28px] font-semibold tracking-[-0.5px] text-[#111827]">
                   {user?.username}
@@ -60,9 +55,7 @@ export default function ProfileSection() {
               <div className="mt-4 flex items-center gap-6 text-[#6B7280]">
                 <div className="flex items-center gap-2">
                   <MapPin size={16} />
-                  <span className="text-[14px]">
-                    {user?.location}
-                  </span>
+                  <span className="text-[14px]">{user?.location}</span>
                 </div>
 
                 <div className="flex items-center gap-2">
@@ -77,9 +70,9 @@ export default function ProfileSection() {
               </div>
 
               <p className="mt-5 max-w-[620px] text-[15px] leading-7 text-[#4B5563]">
-                Movie explorer, dreamer and front-end developer. Always looking for something amazing to watch.
+                Movie explorer, dreamer and front-end developer. Always looking
+                for something amazing to watch.
               </p>
-
             </div>
           </div>
 
@@ -91,19 +84,16 @@ export default function ProfileSection() {
             <Pencil size={16} />
             Edit Profile
           </button>
-
         </div>
       </div>
 
       {/* STATS */}
       <section className="mt-8">
-
         <h3 className="mb-5 text-[22px] font-semibold text-[#111827]">
           Watchlist Summary
         </h3>
 
         <div className="grid grid-cols-3 gap-5">
-
           {/* WATCHLIST */}
           <StatCard
             icon={<Bookmark size={20} className="text-[#7C3AED]" />}
@@ -121,16 +111,12 @@ export default function ProfileSection() {
           />
 
           {/* REMOVE WATCHED & AVG RATING */}
-
         </div>
       </section>
 
       {/* RECENT ACTIVITY (فعلاً ثابت) */}
       <section className="mt-10">
-
-      
-
-     <RecentActivity />
+        <RecentActivity />
       </section>
 
       {/* MODAL */}
@@ -138,7 +124,6 @@ export default function ProfileSection() {
         isOpen={openEditModal}
         onClose={() => setOpenEditModal(false)}
       />
-
     </div>
   );
 }
@@ -149,21 +134,18 @@ function StatCard({ icon, value, label, bg }: any) {
   return (
     <div className="rounded-[24px] border bg-white p-5 shadow-sm">
       <div className="flex items-center gap-4">
-
-        <div className={`flex h-12 w-12 items-center justify-center rounded-2xl ${bg}`}>
+        <div
+          className={`flex h-12 w-12 items-center justify-center rounded-2xl ${bg}`}
+        >
           {icon}
         </div>
 
         <div>
-          <h4 className="text-[28px] font-semibold">
-            {value}
-          </h4>
+          <h4 className="text-[28px] font-semibold">{value}</h4>
+          
 
-          <p className="text-[13px] text-[#6B7280]">
-            {label}
-          </p>
+          <p className="text-[13px] text-[#6B7280]">{label}</p>
         </div>
-
       </div>
     </div>
   );
@@ -174,9 +156,7 @@ function StatCard({ icon, value, label, bg }: any) {
 function ActivityItem({ image, title, time, rating }: any) {
   return (
     <div className="flex items-center justify-between px-6 py-4">
-
       <div className="flex items-center gap-4">
-
         <img
           src={image}
           alt={title}
@@ -184,7 +164,6 @@ function ActivityItem({ image, title, time, rating }: any) {
         />
 
         <div className="flex items-center gap-3">
-
           <h4 className="font-medium">{title}</h4>
 
           {rating && (
@@ -193,14 +172,10 @@ function ActivityItem({ image, title, time, rating }: any) {
               {rating}
             </div>
           )}
-
         </div>
       </div>
 
-      <span className="text-[13px] text-[#6B7280]">
-        {time}
-      </span>
-
+      <span className="text-[13px] text-[#6B7280]">{time}</span>
     </div>
   );
 }
