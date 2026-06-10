@@ -1,27 +1,15 @@
-import {
-  Heart,
-  Star,
-} from "lucide-react";
+import { Trash2 } from "lucide-react";
 
-import { useNavigate }
-  from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
-import {
-  useFavorites,
-} from "../../contexts/FavoriteContext";
+import { useFavorites } from "../../contexts/FavoriteContext";
 
 export default function FavariteProfile() {
+  const navigate = useNavigate();
 
-  const navigate =
-    useNavigate();
-
-  const {
-    favorites,
-    removeFavorite,
-  } = useFavorites();
+  const { favorites, removeFavorite } = useFavorites();
 
   return (
-
     <div
       className="
         flex-1
@@ -31,113 +19,101 @@ export default function FavariteProfile() {
         py-10
       "
     >
-
       {/* HEADER */}
-      <div className="mb-10">
+     <div className="mb-6">
+  <h2  className="text-[24px] font-bold text-[#111827]">
+    Favorites
+  </h2>
 
-        <h1
-          className="
-            text-[42px]
-            font-bold
-            tracking-[-1px]
-            text-[#111827]
-          "
-        >
-          Favorites
-        </h1>
+  <p className="text-[15px] text-[#6B7280] mt-1">
+    Your favorite movies and TV shows
+  </p>
+</div>
 
-        <p
-          className="
-            mt-2
-            text-[17px]
-            text-[#6B7280]
-          "
-        >
-          Your favorite movies and TV shows
-        </p>
-
-      </div>
-
+  
       {/* EMPTY */}
-      {favorites.length === 0 && (
+     {favorites.length > 0 && (
 
+  <div className="rounded-3xl border border-gray-100 overflow-hidden bg-white">
+    {favorites.map((movie, index) => (
+      <div
+        key={movie.id}
+        className={`
+          flex items-center justify-between
+          px-6 py-5 bg-white
+          transition-all duration-200
+          hover:bg-gray-50
+          hover:shadow-sm
+          ${
+            index !== favorites.length - 1
+              ? "border-b border-gray-100"
+              : ""
+          }
+        `}
+      >
+        {/* LEFT */}
         <div
-          className="
-            flex
-            flex-col
-            items-center
-            justify-center
-            py-32
-          "
+          className="flex items-center gap-5 cursor-pointer"
+          onClick={() => navigate(`/movie/${movie.id}`)}
         >
-
-          <div
-            className="
-              flex
-              items-center
-              justify-center
-              h-24
-              w-24
-              rounded-full
-              bg-[#EEE7FF]
-            "
-          >
-            <Heart
-              size={40}
-              className="
-                text-[#7C3AED]
-              "
-            />
-          </div>
-
-          <h2
-            className="
-              mt-6
-              text-[28px]
-              font-bold
-              text-[#111827]
-            "
-          >
-            No favorites yet
-          </h2>
-
-          <p
-            className="
-              mt-3
-              text-[16px]
-              text-[#6B7280]
-            "
-          >
-            Start adding movies to your favorites list
-          </p>
-
-          <button
-            onClick={() =>
-              navigate("/movies")
+          <img
+            src={
+              movie.poster?.startsWith("http")
+                ? movie.poster
+                : `https://image.tmdb.org/t/p/w200${movie.poster}`
             }
-            className="
-              mt-8
-              h-[52px]
-              px-8
-              rounded-full
-              bg-[#7C3AED]
-              text-white
-              text-[15px]
-              font-medium
-              hover:bg-[#6D28D9]
-              transition
-            "
-          >
-            Browse Movies
-          </button>
+            alt={movie.title}
+            className="w-20 h-20 rounded-xl object-cover"
+          />
 
-        </div>
 
-      )}
+    <div>
+  <h3 className="text-[17px] font-semibold text-[#111827]">
+    {movie.title}
+  </h3>
+
+  <div className="flex items-center gap-3 mt-2">
+    <span className="text-[15px] text-[#6B7280]">
+      {movie.release_date?.slice(0, 4)}
+    </span>
+
+    <span className="px-3 py-1 rounded-full bg-[#F3F4F6] text-[#6B7280] text-[13px] font-medium">
+      Favorite
+    </span>
+  </div>
+</div>
+    </div>
+
+    {/* RIGHT */}
+    <button
+      onClick={() => removeFavorite(movie.id)}
+     className="
+  h-[46px]
+  px-5
+  rounded-xl
+  border border-[#E9D5FF]
+  bg-white
+  text-[#7C3AED]
+  text-[15px]
+  font-semibold
+  flex items-center gap-2
+  hover:bg-[#FAF5FF]
+  transition
+"
+    >
+     <Trash2 size={16} />
+      Remove
+    </button>
+  </div>
+))}
+
+
+  </div>
+)}
+
 
       {/* GRID */}
       {favorites.length > 0 && (
-
         <div
           className="
             grid
@@ -146,163 +122,9 @@ export default function FavariteProfile() {
             gap-y-10
           "
         >
-
-          {favorites.map((movie) => (
-
-            <div
-              key={movie.id}
-              onClick={() =>
-                navigate(`/movie/${movie.id}`)
-              }
-              className="
-                group
-                cursor-pointer
-              "
-            >
-
-              {/* POSTER */}
-              <div
-                className="
-                  relative
-                  overflow-hidden
-                  rounded-[24px]
-                "
-              >
-
-                <img
-                  src={
-                    movie.poster?.startsWith("http")
-                      ? movie.poster
-                      : `https://image.tmdb.org/t/p/w500${movie.poster}`
-                  }
-                  alt={movie.title}
-                  className="
-                    h-[380px]
-                    w-full
-                    object-cover
-                    transition-all
-                    duration-500
-                    group-hover:scale-105
-                  "
-                />
-
-                {/* OVERLAY */}
-                <div
-                  className="
-                    absolute
-                    inset-0
-                    bg-gradient-to-t
-                    from-black/50
-                    via-transparent
-                    to-transparent
-                    opacity-0
-                    group-hover:opacity-100
-                    transition
-                  "
-                />
-
-                {/* REMOVE FAVORITE */}
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    removeFavorite(movie.id);
-                  }}
-                  className="
-                    absolute
-                    top-4
-                    right-4
-                    flex
-                    items-center
-                    justify-center
-                    h-11
-                    w-11
-                    rounded-full
-                    bg-black/40
-                    backdrop-blur-md
-                    hover:bg-black/60
-                    transition
-                  "
-                >
-
-                  <Heart
-                    size={20}
-                    className="
-                      fill-red-500
-                      text-red-500
-                    "
-                  />
-
-                </button>
-
-              </div>
-
-              {/* INFO */}
-              <div className="mt-4">
-
-                <h3
-                  className="
-                    text-[22px]
-                    leading-8
-                    font-semibold
-                    text-[#111827]
-                    line-clamp-2
-                  "
-                >
-                  {movie.title}
-                </h3>
-
-                <div
-                  className="
-                    mt-3
-                    flex
-                    items-center
-                    justify-between
-                  "
-                >
-
-                  <span
-                    className="
-                      text-[17px]
-                      text-[#6B7280]
-                    "
-                  >
-                    {movie.release_date?.split("-")[0]}
-                  </span>
-
-                  <div className="flex items-center gap-2">
-
-                    <Star
-                      size={18}
-                      className="
-                        fill-[#FBBF24]
-                        text-[#FBBF24]
-                      "
-                    />
-
-                    <span
-                      className="
-                        text-[17px]
-                        font-semibold
-                        text-[#111827]
-                      "
-                    >
-                      {movie.rating?.toFixed(1)}
-                    </span>
-
-                  </div>
-
-                </div>
-
-              </div>
-
-            </div>
-
-          ))}
-
+         
         </div>
-
       )}
-
     </div>
   );
 }

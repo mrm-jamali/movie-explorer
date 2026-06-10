@@ -1,126 +1,77 @@
-import { Link } from "react-router-dom";
-import { FaHeart } from "react-icons/fa";
+import { Heart, Star } from "lucide-react";
 import { useFavorites } from "../contexts/FavoriteContext";
-import { useAuth } from "../contexts/AuthContext";
 
 type Props = {
-  id: number;
-  title: string;
-  poster: string;
-  release_date: string;
-  rating?: number;
+  movie: {
+    id: number;
+    title: string;
+    poster_path?: string;
+    release_date?: string;
+    vote_average?: number;
+  };
 };
 
-export default function MovieCard({
-  id,
-  title,
-  poster,
-  release_date,
-  rating,
-}: Props) {
-  const { favorites, toggleFavorite } = useFavorites();
-  const { user } = useAuth();
+export default function MovieCard({ movie }: Props) {
+  const { toggleFavorite, isFavorite } = useFavorites();
 
-  const isFavorite = favorites.some(
-    (movie) => movie.id === id
-  );
+  if (!movie) return null; // 👈 جلوگیری از crash
 
-  const year = release_date?.slice(0, 4);
+  const fav = isFavorite(movie.id);
+
+  const formattedMovie = {
+    id: movie.id,
+    title: movie.title,
+    poster: movie.poster_path || "",
+    release_date: movie.release_date || "",
+    rating: movie.vote_average || 0,
+  };
 
   return (
-    <div className="relative w-full h-full bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition">
+    <div className="group cursor-pointer">
 
-      {/* FAVORITE BUTTON */}
-      <button
-        onClick={() => {
-          if (!user) {
-            alert("Please login first");
-            return;
-          }
+      {/* POSTER */}
+      <div className="relative overflow-hidden rounded-[18px] bg-gray-200">
 
-          toggleFavorite({
-            id,
-            title,
-            poster,
-            release_date,
-            rating,
-          });
-        }}
-        className="
-          absolute
-          top-3
-          right-3
-          z-10
-          h-9
-          w-9
-          flex
-          items-center
-          justify-center
-          rounded-full
-          bg-white/90
-          backdrop-blur-md
-          border
-          border-gray-200
-          shadow-sm
-          hover:scale-110
-          active:scale-95
-          transition-all
-          duration-300
-        "
-      >
-        <FaHeart
-          className={`
-            text-[18px]
-            transition-all
-            duration-300
-            ${
-              isFavorite
-                ? "text-red-500 scale-110"
-                : "text-gray-400 hover:text-gray-500"
-            }
-          `}
+        <img
+          src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
+          alt={movie.title}
+          className="h-[250px] w-full object-cover transition-transform duration-500 group-hover:scale-105"
         />
-      </button>
 
-      {/* IMAGE */}
-      <Link
-        to={`/movie/${id}`}
-        className="flex flex-col h-full"
-      >
-        <div className="h-[250px] overflow-hidden">
-          <img
-            src={`https://image.tmdb.org/t/p/w500${poster}`}
-            alt={title}
-            className="
-              w-full
-              h-full
-              object-cover
-              transition
-              duration-500
-              group-hover:scale-105
-            "
+        {/* HEART */}
+        <button
+          onClick={() => toggleFavorite(formattedMovie)}
+          className="absolute top-3 right-3 h-9 w-9 flex items-center justify-center rounded-full bg-black/40 backdrop-blur-md hover:bg-black/60 transition"
+        >
+          <Heart
+            size={18}
+            className={
+              fav ? "fill-red-500 text-red-500" : "text-white"
+            }
           />
-        </div>
+        </button>
 
-        {/* INFO */}
-        <div className="flex-1 p-3 flex flex-col justify-between">
-          <h3 className="text-[14px] font-semibold text-[#111827] line-clamp-2">
-            {title}
-          </h3>
+      </div>
 
-          <div className="mt-2 flex items-center justify-between">
-            <p className="text-[12px] text-[#6B7280]">
-              {year}
-            </p>
+      {/* INFO */}
+      <div className="mt-2.5">
+        <h3 className="truncate text-[14px] font-medium text-[#111827]">
+          {movie.title}
+        </h3>
 
-            {rating && (
-              <div className="text-[12px] font-medium text-[#111827]">
-                ⭐ {rating.toFixed(1)}
-              </div>
-            )}
+        <div className="mt-1.5 flex items-center justify-between">
+          <span className="text-[12px] text-[#6B7280]">
+            {movie.release_date?.slice(0, 4)}
+          </span>
+
+          <div className="flex items-center gap-1">
+            <Star size={13} className="fill-[#FBBF24] text-[#FBBF24]" />
+            <span className="text-[12px] font-medium text-[#111827]">
+              {movie.vote_average?.toFixed(1)}
+            </span>
           </div>
         </div>
-      </Link>
+      </div>
 
     </div>
   );

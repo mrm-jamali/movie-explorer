@@ -6,22 +6,34 @@ import {
 
 import { useAuth } from "./AuthContext";
 
-interface WatchMovie {
+/* =========================
+   TYPES
+========================= */
+
+export interface WatchMovie {
   id: number;
   title: string;
-  poster: string;
+  poster_path: string;
   release_date: string;
-  rating: number;
+  vote_average: number;
 }
 
 interface WatchListContextType {
-  watchList: number[];
+  watchList: WatchMovie[];
   toggleWatchList: (movie: WatchMovie) => void;
   isInWatchList: (id: number) => boolean;
 }
 
+/* =========================
+   CONTEXT
+========================= */
+
 const WatchListContext =
   createContext<WatchListContextType | undefined>(undefined);
+
+/* =========================
+   PROVIDER
+========================= */
 
 export function WatchListProvider({
   children,
@@ -30,18 +42,19 @@ export function WatchListProvider({
 }) {
   const { user, syncCurrentUser } = useAuth();
 
-  const watchList = user?.watchlist || [];
+  const watchList: WatchMovie[] = user?.watchlist || [];
 
   const toggleWatchList = (movie: WatchMovie) => {
     if (!user) return;
 
-    const exists = user.watchlist.includes(movie.id);
+    const exists = user.watchlist.some(
+      (m) => m.id === movie.id
+    );
 
-    const updatedWatchlist = exists
-      ? user.watchlist.filter((id) => id !== movie.id)
-      : [...user.watchlist, movie.id];
+    const updatedWatchlist: WatchMovie[] = exists
+      ? user.watchlist.filter((m) => m.id !== movie.id)
+      : [...user.watchlist, movie];
 
-    // ✅ safe activities
     const prevActivities = user.activities || [];
 
     const newActivity = {
@@ -49,9 +62,12 @@ export function WatchListProvider({
       type: "watchlist" as const,
       movieId: movie.id,
       title: movie.title,
-      poster: movie.poster,
+      poster_path: movie.poster_path, // ✅ FIX: unified naming
       time: new Date().toISOString(),
     };
+
+
+    
 
     const updatedActivities = exists
       ? prevActivities.filter(
@@ -67,7 +83,7 @@ export function WatchListProvider({
   };
 
   const isInWatchList = (id: number) =>
-    user?.watchlist.includes(id) ?? false;
+    user?.watchlist.some((m) => m.id === id) ?? false;
 
   return (
     <WatchListContext.Provider
@@ -81,6 +97,10 @@ export function WatchListProvider({
     </WatchListContext.Provider>
   );
 }
+
+/* =========================
+   HOOK
+========================= */
 
 export function useWatchList() {
   const context = useContext(WatchListContext);

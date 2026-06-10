@@ -107,24 +107,20 @@ export default function MoviesList() {
           )}
 
           {/* GRID (🔥 اینجا مهمه) */}
-          <div
-            className={`grid gap-4 transition-all duration-300 ${
-              showFilters
-                ? "grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
-                : "grid-cols-2 md:grid-cols-3 lg:grid-cols-6"
-            }`}
-          >
-            {movies.map((movie: any) => (
-              <MovieCard
-                key={movie.id}
-                id={movie.id}
-                title={movie.title}
-                poster={movie.poster_path}
-                release_date={movie.release_date}
-                rating={movie.vote_average}
-              />
-            ))}
-          </div>
+        <div
+  className={`grid gap-4 transition-all duration-300 ${
+    showFilters
+      ? "grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
+      : "grid-cols-2 md:grid-cols-3 lg:grid-cols-6"
+  }`}
+>
+  {movies.map((movie: any) => (
+  <MovieCard
+    key={movie.id}
+    movie={movie}
+  />
+))}
+</div>
 
           {/* PAGINATION */}
           <Pagination

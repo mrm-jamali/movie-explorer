@@ -1,43 +1,106 @@
-import { createContext, useContext } from "react";
+import {
+  createContext,
+  useContext,
+} from "react";
+
 import type { Movie } from "../types/movie";
+
 import { useAuth } from "./AuthContext";
 
-type FavoriteContextType = {
-  favorites: number[];
-  toggleFavorite: (movie: Movie) => void;
-  removeFavorite: (id: number) => void;
-  isFavorite: (id: number) => boolean;
+type FavoriteMovie = {
+  id: number;
+  title: string;
+  poster: string;
+  release_date: string;
+  rating: number;
 };
 
-const FavoriteContext = createContext<FavoriteContextType | null>(null);
+type FavoriteContextType = {
+  favorites: FavoriteMovie[];
+
+  toggleFavorite: (
+    movie: FavoriteMovie
+  ) => void;
+
+  removeFavorite: (
+    id: number
+  ) => void;
+
+  isFavorite: (
+    id: number
+  ) => boolean;
+};
+
+const FavoriteContext =
+  createContext<
+    FavoriteContextType | null
+  >(null);
 
 export function FavoriteProvider({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const { user, syncCurrentUser } = useAuth();
+  const {
+    user,
+    syncCurrentUser,
+  } = useAuth();
 
-  /* =========================
-     TOGGLE FAVORITE
-  ========================= */
-  const toggleFavorite = (movie: Movie) => {
+  const favorites =
+    user?.favorites || [];
+
+  const toggleFavorite = (
+    movie: FavoriteMovie
+  ) => {
     if (!user) return;
 
-    const exists = user.favorites.includes(movie.id);
+    const exists =
+      user.favorites.some(
+        (m) => m.id === movie.id
+      );
 
-    const updatedFavorites = exists
-      ? user.favorites.filter((id) => id !== movie.id)
-      : [...user.favorites, movie.id];
+    const updatedFavorites =
+      exists
+        ? user.favorites.filter(
+            (m) => m.id !== movie.id
+          )
+        : [
+            ...user.favorites,
+            movie,
+          ];
 
-    /* =========================
-       NEW NOTIFICATION
-    ========================= */
+    const prevActivities =
+      user.activities || [];
+
+    const newActivity = {
+      id: crypto.randomUUID(),
+      type: "favorite" as const,
+      movieId: movie.id,
+      title: movie.title,
+      poster: movie.poster,
+      time: new Date().toISOString(),
+    };
+
+    const updatedActivities =
+      exists
+        ? prevActivities.filter(
+            (a) =>
+              !(
+                a.type ===
+                  "favorite" &&
+                a.movieId === movie.id
+              )
+          )
+        : [
+            newActivity,
+            ...prevActivities,
+          ];
+
     const newNotification = {
       id: crypto.randomUUID(),
       type: "favorite" as const,
       title: "Favorites updated",
-      message: exists
+      text: exists
         ? `Removed ${movie.title} from favorites`
         : `Added ${movie.title} to favorites`,
       movieId: movie.id,
@@ -47,36 +110,56 @@ export function FavoriteProvider({
 
     syncCurrentUser({
       ...user,
-      favorites: updatedFavorites,
+      favorites:
+        updatedFavorites,
+
+      activities:
+        updatedActivities,
+
       notifications: [
         newNotification,
-        ...(user.notifications || []),
+        ...(user.notifications ||
+          []),
       ],
     });
   };
 
-  /* =========================
-     REMOVE FAVORITE (manual)
-  ========================= */
-  const removeFavorite = (id: number) => {
+  const removeFavorite = (
+    id: number
+  ) => {
     if (!user) return;
 
     syncCurrentUser({
       ...user,
-      favorites: user.favorites.filter((m) => m !== id),
+
+      favorites:
+        user.favorites.filter(
+          (m) => m.id !== id
+        ),
+
+      activities:
+        user.activities.filter(
+          (a) =>
+            !(
+              a.type ===
+                "favorite" &&
+              a.movieId === id
+            )
+        ),
     });
   };
 
-  /* =========================
-     CHECK FAVORITE
-  ========================= */
-  const isFavorite = (id: number) =>
-    user?.favorites.includes(id) ?? false;
+  const isFavorite = (
+    id: number
+  ) =>
+    user?.favorites.some(
+      (m) => m.id === id
+    ) ?? false;
 
   return (
     <FavoriteContext.Provider
       value={{
-        favorites: user?.favorites || [],
+        favorites,
         toggleFavorite,
         removeFavorite,
         isFavorite,
@@ -88,10 +171,15 @@ export function FavoriteProvider({
 }
 
 export function useFavorites() {
-  const ctx = useContext(FavoriteContext);
+  const ctx =
+    useContext(
+      FavoriteContext
+    );
 
   if (!ctx) {
-    throw new Error("useFavorites must be inside provider");
+    throw new Error(
+      "useFavorites must be inside provider"
+    );
   }
 
   return ctx;

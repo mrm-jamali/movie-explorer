@@ -2,261 +2,164 @@ import {
   Search,
   Star,
   ChevronDown,
+  Heart,
 } from "lucide-react";
 
 import { useMovies } from "../../hooks/useMovies";
 import { useState } from "react";
-
 import Pagination from "../Pagination";
-
+import { useFavorites } from "../../contexts/FavoriteContext";
+import Toast from "../Toast";
+import MovieCard from "../MovieCard";
 
 export default function MoviesSection() {
   const [page, setPage] = useState(1);
- const {
-  data,
-  isLoading,
-  isError,
-} = useMovies(page);
+  const [toast, setToast] = useState<string | null>(null);
 
-const movies = data?.results || [];
+  const { data, isLoading, isError } = useMovies(page);
+  const { toggleFavorite, isFavorite } = useFavorites();
 
+  const movies = data?.results || [];
+
+  const showToast = (message: string) => {
+    setToast(message);
+  };
 
   return (
-    <div className="p-5 md:p-6">
+    <div className="px-6 py-6">
+
+      {/* TOAST */}
+      <Toast message={toast} onClose={() => setToast(null)} />
 
       {/* HEADER */}
       <div className="mb-6">
-
-        <h1
-          className="
-            text-[26px]
-            font-semibold
-            tracking-[-0.5px]
-            text-[#111827]
-          "
-        >
+        <h1 className="text-[26px] font-semibold tracking-[-0.5px] text-[#111827]">
           Movies
         </h1>
 
-        <p
-          className="
-            mt-1
-            text-[14px]
-            text-[#6B7280]
-          "
-        >
+        <p className="mt-1 text-[14px] text-[#6B7280]">
           Discover and browse all movies
         </p>
-
       </div>
 
       {/* FILTERS */}
-      <div className="mb-7 flex items-center gap-3">
+     {/* FILTERS */}
+<div className="mb-7 flex items-center gap-3">
 
-        {/* SEARCH */}
-        <div
-          className="
-            flex h-[44px]
-            w-[260px]
-            items-center gap-2
-            rounded-xl
-            border border-gray-200
-            bg-white
-            px-3
-          "
-        >
+  {/* SEARCH (کمی وایدتر و حرفه‌ای‌تر) */}
+  <div
+    className="
+      flex h-[44px]
+      w-[320px]
+      items-center gap-2
+      rounded-xl
+      border border-gray-200
+      bg-white
+      px-3
+      transition
+      hover:border-[#7C3AED]
+      focus-within:border-[#7C3AED]
+      focus-within:ring-2
+      focus-within:ring-[#7C3AED]/10
+    "
+  >
+    <Search size={16} className="text-gray-400" />
+<input
+  type="text"
+  placeholder="Search movies..."
+  className="
+    w-[360px]
+    bg-transparent
+    text-[13px]
+    outline-none
+    placeholder:text-gray-400
+  "
+/>
+  </div>
 
-          <Search
-            size={16}
-            className="text-gray-400"
-          />
+  {/* GENRES */}
+  <button
+    className="
+      flex h-[44px]
+      items-center gap-2
+      rounded-xl
+      border border-gray-200
+      bg-white
+      px-4
+      text-[13px]
+      font-medium
+      text-[#374151]
+      transition
+      hover:border-[#7C3AED]
+      hover:text-[#7C3AED]
+      hover:bg-[#FAF5FF]
+    "
+  >
+    Genres <ChevronDown size={16} />
+  </button>
 
-          <input
-            type="text"
-            placeholder="Search movies..."
-            className="
-              w-full
-              bg-transparent
-              text-[13px]
-              outline-none
-              placeholder:text-gray-400
-            "
-          />
+  {/* YEAR */}
+  <button
+    className="
+      flex h-[44px]
+      items-center gap-2
+      rounded-xl
+      border border-gray-200
+      bg-white
+      px-4
+      text-[13px]
+      font-medium
+      text-[#374151]
+      transition
+      hover:border-[#7C3AED]
+      hover:text-[#7C3AED]
+      hover:bg-[#FAF5FF]
+    "
+  >
+    Year <ChevronDown size={16} />
+  </button>
 
-        </div>
-
-        {/* GENRE */}
-        <button
-          className="
-            flex h-[44px]
-            items-center gap-2
-            rounded-xl
-            border border-gray-200
-            bg-white
-            px-4
-            text-[13px]
-            font-medium
-            text-[#374151]
-            hover:bg-gray-50
-            transition
-          "
-        >
-          Genres
-
-          <ChevronDown size={16} />
-
-        </button>
-
-        {/* YEAR */}
-        <button
-          className="
-            flex h-[44px]
-            items-center gap-2
-            rounded-xl
-            border border-gray-200
-            bg-white
-            px-4
-            text-[13px]
-            font-medium
-            text-[#374151]
-            hover:bg-gray-50
-            transition
-          "
-        >
-          Year
-
-          <ChevronDown size={16} />
-
-        </button>
-
-      </div>
+</div>
 
       {/* LOADING */}
       {isLoading && (
-        <div className="text-[14px] text-gray-500">
+        <div className="text-[14px] text-gray-500 mb-6">
           Loading movies...
         </div>
       )}
 
       {/* ERROR */}
       {isError && (
-        <div className="text-[14px] text-red-500">
+        <div className="text-[14px] text-red-500 mb-6">
           Failed to fetch movies
         </div>
       )}
 
-      {/* MOVIES GRID */}
-      <div
-        className="
-          grid
-          grid-cols-6
-          gap-5
-        "
-      >
+      {/* GRID (اصلاح فاصله‌ها اینجاست 👇) */}
+    <div className="grid grid-cols-6 gap-x-6 gap-y-10">
 
-        {movies?.map((movie) => (
+  {movies
+    ?.filter((movie) => movie?.id) // 👈 جلوگیری از undefined
+    .map((movie) => (
+      <MovieCard
+        key={movie.id}
+        movie={movie}
+        onToast={showToast}
+      />
+    ))}
 
-          <div
-            key={movie.id}
-            className="
-              group
-              cursor-pointer
-            "
-          >
+</div>
 
-            {/* POSTER */}
-            <div
-              className="
-                overflow-hidden
-                rounded-[18px]
-                bg-gray-200
-              "
-            >
-
-              <img
-                src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
-                alt={movie.title}
-                className="
-                  h-[250px]
-                  w-full
-                  object-cover
-                  transition-transform
-                  duration-500
-                  group-hover:scale-105
-                "
-              />
-
-            </div>
-
-            {/* INFO */}
-            <div className="mt-2.5">
-
-              <h3
-                className="
-                  truncate
-                  text-[14px]
-                  font-medium
-                  text-[#111827]
-                "
-              >
-                {movie.title}
-              </h3>
-
-              <div
-                className="
-                  mt-1.5
-                  flex items-center
-                  justify-between
-                "
-              >
-
-                <span
-                  className="
-                    text-[12px]
-                    text-[#6B7280]
-                  "
-                >
-                  {movie.release_date?.slice(0, 4)}
-                </span>
-
-                <div className="flex items-center gap-1">
-
-                  <Star
-                    size={13}
-                    className="
-                      fill-[#FBBF24]
-                      text-[#FBBF24]
-                    "
-                  />
-
-                  <span
-                    className="
-                      text-[12px]
-                      font-medium
-                      text-[#111827]
-                    "
-                  >
-                    {movie.vote_average.toFixed(1)}
-                  </span>
-
-                </div>
-
-              </div>
-
-            </div>
-
-          </div>
-
-        ))}
-
-      </div>
+      {/* PAGINATION */}
       {data && (
-  <Pagination
-    page={page}
-    setPage={setPage}
-    totalPages={Math.min(data.total_pages, 500)}
-  />
-)}
+        <div className="mt-10">
+          <Pagination
+            page={page}
+            setPage={setPage}
+            totalPages={Math.min(data.total_pages, 500)}
+          />
+        </div>
+      )}
 
     </div>
   );

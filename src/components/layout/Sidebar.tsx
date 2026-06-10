@@ -5,8 +5,11 @@ import {
   Heart,
   User,
   Palette,
+  ArrowLeft,
 } from "lucide-react";
+
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 type Section =
   | "overview"
@@ -25,6 +28,8 @@ export default function Sidebar({
   section,
   setSection,
 }: SidebarProps) {
+  const navigate = useNavigate();
+
   const [openTheme, setOpenTheme] = useState(false);
   return (
     <aside
@@ -106,6 +111,11 @@ export default function Sidebar({
             active={section === "profile"}
             onClick={() => setSection("profile")}
           />
+          <SidebarItem
+  icon={<ArrowLeft size={20} />}
+  title="Back to Explore"
+  onClick={() => navigate("/")}
+/>
 
         </div>
       </div>
