@@ -5,6 +5,7 @@ import Pagination from "../components/Pagination";
 import { useEffect, useRef, useState } from "react";
 import MoviesFilter from "../components/MoviesFilter";
 import { useFilterStore } from "../store/filterStore";
+import { Link } from "react-router-dom";
 
 export default function MoviesList() {
   const [page, setPage] = useState(1);
@@ -114,11 +115,14 @@ export default function MoviesList() {
       : "grid-cols-2 md:grid-cols-3 lg:grid-cols-6"
   }`}
 >
-  {movies.map((movie: any) => (
-  <MovieCard
+ {movies.map((movie: any) => (
+  <Link
     key={movie.id}
-    movie={movie}
-  />
+    to={`/movie/${movie.id}`}
+    className="block"
+  >
+    <MovieCard movie={movie} />
+  </Link>
 ))}
 </div>
 

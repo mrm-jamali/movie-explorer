@@ -1,6 +1,8 @@
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { Bookmark } from "lucide-react";
+import { Link } from "react-router-dom";
+import {Heart } from "lucide-react";
 
 import {
   fetchMovieDetails,
@@ -105,33 +107,36 @@ function MovieDetails() {
           <div className="flex flex-wrap gap-3 mt-4">
 
             {/* FAVORITE */}
-            <button
-              onClick={() => {
-                if (!user) {
-                  alert("Please login first");
-                  return;
-                }
+           <button
+  onClick={() => {
+    if (!user) {
+      alert("Please login first");
+      return;
+    }
 
-                toggleFavorite({
-                  id: data.id,
-                  title: data.title,
-                  poster: data.poster_path,
-                  release_date:
-                    data.release_date,
-                  rating:
-                    data.vote_average,
-                });
-              }}
-              className={`px-5 py-2 rounded-lg transition ${
-                favorite
-                  ? "bg-red-500 text-white"
-                  : "bg-purple-500 text-white hover:bg-purple-600"
-              }`}
-            >
-              {favorite
-                ? "❤️ Added to Favorites"
-                : "❤️ Add to Favorite"}
-            </button>
+    toggleFavorite({
+      id: data.id,
+      title: data.title,
+      poster: data.poster_path,
+      release_date: data.release_date,
+      rating: data.vote_average,
+    });
+  }}
+  className={`flex items-center gap-2 px-5 py-2 rounded-lg transition ${
+    favorite
+      ? "bg-purple-500 text-white hover:bg-purple-600"
+      : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+  }`}
+>
+  <Heart
+    size={18}
+    className={
+      favorite ? "fill-white text-white" : "text-gray-600"
+    }
+  />
+
+  {favorite ? "Added to Favorites" : "Add to Favorite"}
+</button>
 
             {/* WATCHLIST */}
             <button
@@ -154,11 +159,11 @@ function MovieDetails() {
                     data.vote_average,
                 });
               }}
-              className={`flex items-center gap-2 px-5 py-2 rounded-lg transition ${
-                watchListed
-                  ? "bg-blue-500 text-white"
-                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-              }`}
+            className={`flex items-center gap-2 px-5 py-2 rounded-lg transition ${
+  watchListed
+    ? "bg-purple-500 text-white hover:bg-purple-600"
+    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+}`}
             >
               <Bookmark size={18} />
 
@@ -219,30 +224,30 @@ function MovieDetails() {
         </h2>
 
         <div className="flex gap-4 overflow-x-auto pb-2">
-          {similarData?.results
-            ?.slice(0, 10)
-            .map((movie: any) => (
-              <div
-                key={movie.id}
-                className="w-[140px] flex-shrink-0"
-              >
-                <img
-                  src={`https://image.tmdb.org/t/p/w300${movie.poster_path}`}
-                  className="rounded-lg w-full h-[200px] object-cover"
-                />
+       {similarData?.results
+  ?.slice(0, 10)
+  .map((movie: any) => (
+    <Link
+      to={`/movie/${movie.id}`}
+      key={movie.id}
+      className="w-[140px] flex-shrink-0 block"
+    >
+      <div>
+        <img
+          src={`https://image.tmdb.org/t/p/w300${movie.poster_path}`}
+          className="rounded-lg w-full h-[200px] object-cover"
+        />
 
-                <p className="text-xs mt-1 line-clamp-2">
-                  {movie.title}
-                </p>
+        <p className="text-xs mt-1 line-clamp-2">
+          {movie.title}
+        </p>
 
-                <p className="text-[11px] text-gray-400">
-                  {movie.release_date?.slice(
-                    0,
-                    4
-                  )}
-                </p>
-              </div>
-            ))}
+        <p className="text-[11px] text-gray-400">
+          {movie.release_date?.slice(0, 4)}
+        </p>
+      </div>
+    </Link>
+  ))}
         </div>
       </div>
 

@@ -70,15 +70,16 @@ export default function Navbar() {
                 </Link>
 
                 {/* Logout */}
-                <button
-                  onClick={() => {
-                    logout();
-                    navigate("/");
-                  }}
-                  className="px-4 py-2 text-sm font-medium text-red-500 border border-red-400 rounded-full hover:bg-red-500 hover:text-white transition"
-                >
-                  Logout
-                </button>
+              <button
+  onClick={() => {
+    logout();
+    navigate("/");
+  }}
+  className="px-4 py-2 text-sm font-medium text-purple-600 border border-purple-500 rounded-full
+             hover:bg-purple-500 hover:text-white transition-all duration-300"
+>
+  Logout
+</button>
 
               </div>
             ) : (
