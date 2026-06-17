@@ -129,3 +129,26 @@ export const fetchMovieVideos = async (
 
   return res.json();
 };
+export const fetchHeroMovies = async () => {
+  const res = await fetch(
+    `${BASE_URL}/movie/now_playing?api_key=${API_KEY}`
+  );
+
+  if (!res.ok) {
+    throw new Error("Failed to fetch hero movies");
+  }
+
+  return res.json();
+};
+
+export const fetchTrendingMovies = async () => {
+  const res = await fetch(
+    `${BASE_URL}/trending/movie/day?api_key=${API_KEY}`
+  );
+
+  if (!res.ok) {
+    throw new Error("Failed to fetch trending movies");
+  }
+
+  return res.json();
+};

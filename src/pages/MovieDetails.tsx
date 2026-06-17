@@ -3,6 +3,9 @@ import { useQuery } from "@tanstack/react-query";
 import { Bookmark } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Heart } from "lucide-react";
+import QueryState from "../components/QueryState";
+import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
 
 import {
   fetchMovieDetails,
@@ -33,26 +36,40 @@ function MovieDetails() {
   const { data: castData } = useQuery({
     queryKey: ["cast", id],
     queryFn: () => fetchMovieCredits(id!),
+     enabled: !!id,
   });
 
   // 🎬 Similar movies
   const { data: similarData } = useQuery({
     queryKey: ["similar", id],
     queryFn: () => fetchSimilarMovies(id!),
+      enabled: !!id,
   });
 
-  if (isLoading) return <p className="text-center mt-10">Loading...</p>;
 
-  if (error)
-    return (
-      <p className="text-center mt-10 text-red-500">Error loading movie</p>
-    );
+const location = useLocation();
 
-  const favorite = isFavorite(data.id);
-
-  const watchListed = isInWatchList(data.id);
+useEffect(() => {
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth",
+  });
+}, [location.pathname]);
+const favorite = data ? isFavorite(data.id) : false;
+const filteredCast =
+  castData?.cast?.filter((actor: any) => actor.profile_path) ?? [];
+const watchListed = data
+  ? isInWatchList(data.id)
+  : false;
+ const filteredSimilar =
+  similarData?.results?.filter((movie: any) => movie.poster_path) ?? [];
 
   return (
+     <QueryState
+    isLoading={isLoading}
+    error={error}
+  >
+        {!data ? null : (
     <div className="max-w-6xl mx-auto mt-10 px-4 md:px-6">
       {/* MAIN CARD */}
       <div className="flex flex-col md:flex-row gap-6 bg-white rounded-2xl shadow-md p-4 md:p-6">
@@ -157,28 +174,26 @@ function MovieDetails() {
       </div>
 
       {/* CAST */}
-      <div className="mt-10">
-        <h2 className="text-lg font-bold mb-4">Cast</h2>
+   {filteredCast.length > 0 && (
+  <div className="mt-10">
+    <h2 className="text-lg font-bold mb-4">Cast</h2>
 
-        <div className="flex gap-4 flex-wrap">
-          {castData?.cast
-            ?.filter((actor: any) => actor.profile_path)
-            ?.slice(0, 6)
-            .map((actor: any) => (
-              <div key={actor.id} className="w-[90px] text-center">
-                <img
-                  src={`https://image.tmdb.org/t/p/w200${actor.profile_path}`}
-                  className="w-[70px] h-[70px] rounded-lg object-cover mx-auto"
-                />
-
-                <p className="text-xs mt-1">{actor.name}</p>
-              </div>
-            ))}
+    <div className="flex gap-4 flex-wrap">
+      {filteredCast.slice(0, 6).map((actor: any) => (
+        <div key={actor.id} className="w-[90px] text-center">
+          <img
+            src={`https://image.tmdb.org/t/p/w200${actor.profile_path}`}
+            className="w-[70px] h-[70px] rounded-lg object-cover mx-auto"
+          />
+          <p className="text-xs mt-1">{actor.name}</p>
         </div>
-      </div>
-
+      ))}
+    </div>
+  </div>
+)}
       {/* SIMILAR MOVIES */}
       {/* SIMILAR MOVIES */}
+      {filteredSimilar.length > 0 &&
 <div className="mt-12">
   <h2 className="text-lg font-bold mb-4">Similar Movies</h2>
 
@@ -229,7 +244,10 @@ function MovieDetails() {
     ))}
   </div>
 </div>
+}
     </div>
+      )}
+    </QueryState>
   );
 }
 

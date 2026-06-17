@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import MoviesFilter from "../components/MoviesFilter";
 import { useFilterStore } from "../store/filterStore";
 import { Link } from "react-router-dom";
+import QueryState from "../components/QueryState";
 
 export default function MoviesList() {
   const [page, setPage] = useState(1);
@@ -39,7 +40,7 @@ export default function MoviesList() {
   const movies = data?.results ?? [];
   const totalPages = data?.total_pages ?? 1;
 
-  const isInitialLoading = isLoading && movies.length === 0;
+
 
   useEffect(() => {
     topRef.current?.scrollIntoView({
@@ -48,14 +49,13 @@ export default function MoviesList() {
     });
   }, [page]);
 
-  if (error)
-    return (
-      <p className="text-center mt-10 text-red-500">
-        Error loading movies
-      </p>
-    );
+ 
 
   return (
+     <QueryState
+    isLoading={isLoading}
+    error={error}
+  >
     <div className="max-w-7xl mx-auto px-4 mt-6">
 
       {/* TITLE */}
@@ -95,17 +95,8 @@ export default function MoviesList() {
         {/* CONTENT */}
         <div className="flex-1">
 
-          {/* LOADING */}
-          {isInitialLoading && (
-            <p className="text-center mt-10">Loading...</p>
-          )}
-
-          {/* COUNT */}
-          {!isInitialLoading && (
-            <p className="mb-4 text-sm text-gray-500">
-              {movies.length} Movies found
-            </p>
-          )}
+       
+       
 
           {/* GRID (🔥 اینجا مهمه) */}
         <div
@@ -135,5 +126,6 @@ export default function MoviesList() {
         </div>
       </div>
     </div>
+    </QueryState>
   );
 }
