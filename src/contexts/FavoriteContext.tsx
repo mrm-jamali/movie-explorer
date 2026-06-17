@@ -3,7 +3,7 @@ import {
   useContext,
 } from "react";
 
-import type { Movie } from "../types/movie";
+
 
 import { useAuth } from "./AuthContext";
 

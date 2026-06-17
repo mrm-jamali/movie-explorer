@@ -1,5 +1,6 @@
 import { Heart, Star } from "lucide-react";
 import { useFavorites } from "../contexts/FavoriteContext";
+import { Link } from "react-router-dom";
 
 type Props = {
   movie: {
@@ -9,9 +10,10 @@ type Props = {
     release_date?: string;
     vote_average?: number;
   };
+  showFavorite?: boolean;
 };
 
-export default function MovieCard({ movie }: Props) {
+export default function MovieCard({ movie, showFavorite = true }: Props) {
   const { toggleFavorite, isFavorite } = useFavorites();
 
   if (!movie) return null; // 👈 جلوگیری از crash
@@ -28,10 +30,9 @@ export default function MovieCard({ movie }: Props) {
 
   return (
     <div className="group cursor-pointer">
-
       {/* POSTER */}
+<Link to={`/movie/${movie.id}`}>
       <div className="relative overflow-hidden rounded-[18px] bg-gray-200">
-
         <img
           src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
           alt={movie.title}
@@ -39,20 +40,19 @@ export default function MovieCard({ movie }: Props) {
         />
 
         {/* HEART */}
-        <button
-          onClick={() => toggleFavorite(formattedMovie)}
-          className="absolute top-3 right-3 h-9 w-9 flex items-center justify-center rounded-full bg-black/40 backdrop-blur-md hover:bg-black/60 transition"
-        >
-          <Heart
-            size={18}
-            className={
-              fav ? "fill-red-500 text-red-500" : "text-white"
-            }
-          />
-        </button>
-
+        {showFavorite && (
+          <button
+            onClick={() => toggleFavorite(formattedMovie)}
+            className="absolute top-3 right-3 h-9 w-9 flex items-center justify-center rounded-full bg-black/40 backdrop-blur-md hover:bg-black/60 transition"
+          >
+            <Heart
+              size={18}
+              className={fav ? "fill-red-500 text-red-500" : "text-white"}
+            />
+          </button>
+        )}
       </div>
-
+</Link>
       {/* INFO */}
       <div className="mt-2.5">
         <h3 className="truncate text-[14px] font-medium text-[#111827]">
@@ -72,7 +72,6 @@ export default function MovieCard({ movie }: Props) {
           </div>
         </div>
       </div>
-
     </div>
   );
 }

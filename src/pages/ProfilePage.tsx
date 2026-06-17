@@ -1,19 +1,14 @@
 import { useState } from "react";
+import { useLocation } from "react-router-dom";
 
 import DashboardLayout from "../components/layout/DashboardLayout";
 import Sidebar from "../components/layout/Sidebar";
-
 import ProfileNavbar from "../components/profile/ProfileNavbar";
 
 import WatchList from "../components/WatchList";
-import Preferences from "../components/profile/Preferences";
 import MovieSection from "../components/profile/MovieSection";
-
 import ProfileSection from "../components/profile/ProfileSection";
-
 import OverviewSection from "../components/profile/OverviewSection";
-
-/* ✅ IMPORT FAVORITES */
 import FavariteProfile from "../components/profile/FavariteProfile";
 
 type Section =
@@ -25,14 +20,12 @@ type Section =
   | "theme";
 
 export default function ProfilePage() {
+const [section, setSection] = useState<Section>("overview");
 
-  const [section, setSection] =
-    useState<Section>("overview");
+console.log("PROFILE PAGE RENDERED");
 
   return (
-
     <DashboardLayout>
-
       <div className="flex min-h-screen">
 
         {/* SIDEBAR */}
@@ -45,64 +38,39 @@ export default function ProfilePage() {
         <div className="flex-1 bg-[#F8F9FB]">
 
           {/* NAVBAR */}
-          <ProfileNavbar section={section} />
+         <ProfileNavbar
+  section={section}
+  setSection={setSection}
+/>
 
           {/* CONTENT */}
           <div>
 
-            {/* OVERVIEW */}
-            {section === "overview" && (
-              <OverviewSection />
-            )}
+            {section === "overview" && <OverviewSection />}
 
-            {/* MOVIES */}
-            {section === "movie" && (
-              <MovieSection />
-            )}
+            {section === "movie" && <MovieSection />}
 
-            {/* FAVORITES ✅ */}
-            {section === "favorites" && (
-              <FavariteProfile />
-            )}
+            {section === "favorites" && <FavariteProfile />}
 
-            {/* WATCHLIST */}
             {section === "watchlist" && (
               <div className="p-6 md:p-8">
                 <WatchList />
               </div>
             )}
 
-            {/* PROFILE */}
-            {section === "profile" && (
-              <ProfileSection />
-            )}
+            {section === "profile" && <ProfileSection />}
 
-            {/* THEME */}
             {section === "theme" && (
               <div className="p-6 md:p-8">
-
-                <div
-                  className="
-                    rounded-3xl
-                    border border-gray-200
-                    bg-white
-                    p-10
-                    text-gray-500
-                  "
-                >
+                <div className="rounded-3xl border border-gray-200 bg-white p-10 text-gray-500">
                   Theme settings coming soon...
                 </div>
-
               </div>
             )}
 
           </div>
-
         </div>
-
       </div>
-
     </DashboardLayout>
-
   );
 }

@@ -7,7 +7,9 @@ const BASE_URL = "https://api.themoviedb.org/3";
 const API_KEY = "f78cc0f4996abf0b855de7672aacf8e6";
 
 
-export const fetchPopularMovies = async (page: number): Promise<MoviesResponse> => {
+export const fetchPopularMovies = async (page: number) => {
+  await new Promise((res) => setTimeout(res, 3000)); // تست loading
+
   const res = await fetch(
     `${BASE_URL}/movie/popular?api_key=${API_KEY}&page=${page}`
   );

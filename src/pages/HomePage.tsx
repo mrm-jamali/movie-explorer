@@ -6,19 +6,18 @@ import { fetchPopularMovies, fetchGenres } from "../services/movieApi";
 import GenreFilter from "../components/GenreFilter";
 import SearchBar from "../components/SearchBar";
 import MovieCard from "../components/MovieCard";
-import HeroSlider from "../components/Hero";
-import SkeletonCard from "../components/SkeletonCard";
 
 import type { Movie } from "../types/movie";
+import QueryState from "../components/QueryState";
 
 import { Film, Play, ChevronLeft, ChevronRight } from "lucide-react";
 
 function HomePage() {
   const [selectedGenre, setSelectedGenre] = useState<number | null>(null);
   const [search, setSearch] = useState("");
-  const [currentHero, setCurrentHero] = useState(0);
 
-  const sliderRef = useRef<HTMLDivElement | null>(null);
+  const movieSliderRef = useRef<HTMLDivElement | null>(null);
+  const continueSliderRef = useRef<HTMLDivElement | null>(null);
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["movies", 1],
@@ -32,28 +31,9 @@ function HomePage() {
 
   const movies = data?.results || [];
 
-  const heroMovies =
-    movies
-      ?.filter((movie: Movie) => movie.backdrop_path)
-      .slice(0, 6) || [];
-
-  // ✅ AUTO HERO SLIDER (حل مشکل اصلی)
-  useEffect(() => {
-    if (!heroMovies.length) return;
-
-    const interval = setInterval(() => {
-      setCurrentHero((prev) =>
-        prev === heroMovies.length - 1 ? 0 : prev + 1
-      );
-    }, 4000);
-
-    return () => clearInterval(interval);
-  }, [heroMovies.length]);
-
   const filteredMovies = movies.filter((movie: Movie) => {
     const matchGenre =
-      selectedGenre === null ||
-      movie.genre_ids?.includes(selectedGenre);
+      selectedGenre === null || movie.genre_ids?.includes(selectedGenre);
 
     const matchSearch = movie.title
       .toLowerCase()
@@ -64,119 +44,99 @@ function HomePage() {
 
   const continueWatching = movies.slice(5, 12);
 
-  const scroll = (direction: "left" | "right") => {
-    if (!sliderRef.current) return;
+  // scroll handler for movies
+  const scrollMovies = (direction: "left" | "right") => {
+    if (!movieSliderRef.current) return;
 
-    sliderRef.current.scrollBy({
+    movieSliderRef.current.scrollBy({
       left: direction === "left" ? -240 : 240,
       behavior: "smooth",
     });
   };
 
-  if (isLoading) {
-    return (
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        {Array.from({ length: 6 }).map((_, i) => (
-          <SkeletonCard key={i} />
-        ))}
-      </div>
-    );
-  }
+  // scroll handler for continue watching
+  const scrollContinue = (direction: "left" | "right") => {
+    if (!continueSliderRef.current) return;
 
-  if (error || !data) {
-    return (
-      <div className="text-center mt-10">
-        <p>Something went wrong 😢</p>
-
-        <button
-          onClick={() => window.location.reload()}
-          className="px-4 py-2 mt-4 bg-purple-500 text-white rounded-full hover:bg-purple-600 transition"
-        >
-          Retry
-        </button>
-      </div>
-    );
-  }
+    continueSliderRef.current.scrollBy({
+      left: direction === "left" ? -240 : 240,
+      behavior: "smooth",
+    });
+  };
 
   return (
-    <>
-      <HeroSlider
-        heroMovies={heroMovies}
-        currentHero={currentHero}
-        setCurrentHero={setCurrentHero}
-      />
+   <QueryState
+  isLoading={isLoading}
+  error={error}
+>
+    <div className="max-w-[1400px] mx-auto px-6">
 
-      <div className="max-w-[1400px] mx-auto px-6">
+      {/* SEARCH + FILTER */}
+      <div className="flex items-center justify-between gap-6 flex-wrap mt-20 mb-6">
+        <SearchBar onSearch={setSearch} />
 
-        {/* Search + Filter */}
-        <div className="flex items-center justify-between gap-6 flex-wrap mt-20 mb-6">
-          <SearchBar onSearch={setSearch} />
+        <GenreFilter
+          genres={genresData?.genres || []}
+          selectedGenre={selectedGenre}
+          onSelectGenre={setSelectedGenre}
+        />
+      </div>
 
-          <GenreFilter
-            genres={genresData?.genres || []}
-            selectedGenre={selectedGenre}
-            onSelectGenre={setSelectedGenre}
-          />
+      {/* MOVIES HEADER */}
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="text-xl font-bold flex items-center gap-2">
+          <Film size={18} className="text-purple-500" />
+          Movies List
+        </h2>
+
+        <div className="flex items-center gap-2">
+          <button onClick={() => scrollMovies("left")}>
+            <ChevronLeft size={18} />
+          </button>
+
+          <button onClick={() => scrollMovies("right")}>
+            <ChevronRight size={18} />
+          </button>
         </div>
+      </div>
 
-        {/* Movies Header */}
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-bold flex items-center gap-2">
-            <Film size={18} className="text-purple-500" />
-            Movies List
-          </h2>
-
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => scroll("left")}
-              className="h-9 w-9 flex items-center justify-center rounded-full bg-white shadow hover:bg-gray-100 transition"
-            >
-              <ChevronLeft size={18} />
-            </button>
-
-            <button
-              onClick={() => scroll("right")}
-              className="h-9 w-9 flex items-center justify-center rounded-full bg-white shadow hover:bg-gray-100 transition"
-            >
-              <ChevronRight size={18} />
-            </button>
+      {/* MOVIES */}
+      <div ref={movieSliderRef} className="flex gap-5 overflow-hidden">
+        {filteredMovies.map((movie: Movie) => (
+          <div key={movie.id} className="w-[200px] flex-shrink-0">
+            <MovieCard movie={movie} />
           </div>
-        </div>
+        ))}
+      </div>
 
-        {/* Movies Slider */}
-        <div
-          ref={sliderRef}
-          className="flex gap-5 overflow-x-auto scroll-smooth pb-4"
-        >
-          {filteredMovies.map((movie: Movie) => (
-            <div
-              key={movie.id}
-              className="w-[200px] flex-shrink-0"
-            >
-              <MovieCard movie={movie} />
-            </div>
-          ))}
-        </div>
-
-        {/* Continue Watching */}
-        <h2 className="text-xl font-bold mt-10 mb-4 flex items-center gap-2">
+      {/* CONTINUE WATCHING */}
+      <div className="flex items-center justify-between mt-10 mb-4">
+        <h2 className="text-xl font-bold flex items-center gap-2">
           <Play size={18} className="text-purple-500" />
           Continue Watching
         </h2>
 
-        <div className="flex gap-5 overflow-x-auto scrollbar-hide pb-4">
-          {continueWatching.map((movie: Movie) => (
-            <div
-              key={movie.id}
-              className="w-[200px] flex-shrink-0"
-            >
-              <MovieCard movie={movie} />
-            </div>
-          ))}
-        </div>
+        <div className="flex items-center gap-2">
+          <button onClick={() => scrollContinue("left")}>
+            <ChevronLeft size={18} />
+          </button>
 
+          <button onClick={() => scrollContinue("right")}>
+            <ChevronRight size={18} />
+          </button>
+        </div>
       </div>
-    </>
+
+      <div ref={continueSliderRef} className="flex gap-5 overflow-hidden">
+        {continueWatching.map((movie: Movie) => (
+          <div key={movie.id} className="w-[200px] flex-shrink-0">
+            <MovieCard movie={movie} showFavorite={false} />
+          </div>
+        ))}
+      </div>
+
+    </div>
+  </QueryState>
   );
 }
 
