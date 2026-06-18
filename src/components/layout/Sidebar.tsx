@@ -24,10 +24,7 @@ type SidebarProps = {
   setSection: (s: Section) => void;
 };
 
-export default function Sidebar({
-  section,
-  setSection,
-}: SidebarProps) {
+export default function Sidebar({ section, setSection }: SidebarProps) {
   const navigate = useNavigate();
 
   const [openTheme, setOpenTheme] = useState(false);
@@ -43,13 +40,10 @@ export default function Sidebar({
         justify-between
       "
     >
-
       {/* TOP */}
       <div>
-
         {/* LOGO */}
         <div className="mb-12 flex items-center gap-3 px-2">
-
           <div
             className="
               flex h-11 w-11
@@ -76,7 +70,6 @@ export default function Sidebar({
 
         {/* MENU */}
         <div className="space-y-2">
-
           <SidebarItem
             icon={<House size={20} />}
             title="Overview"
@@ -112,32 +105,29 @@ export default function Sidebar({
             onClick={() => setSection("profile")}
           />
           <SidebarItem
-  icon={<ArrowLeft size={20} />}
-  title="Back to Explore"
-  onClick={() => navigate("/")}
-/>
-
+            icon={<ArrowLeft size={20} />}
+            title="Back to Explore"
+            onClick={() => navigate("/")}
+          />
         </div>
       </div>
 
       {/* BOTTOM */}
       <div>
-
         <div className="mb-5 border-t border-gray-200" />
 
         <div>
-  <SidebarItem
-    icon={<Palette size={20} />}
-    title="Theme"
-    active={section === "theme"}
-    onClick={() => setOpenTheme(!openTheme)}
-  />
+          <SidebarItem
+            icon={<Palette size={20} />}
+            title="Theme"
+            active={section === "theme"}
+            onClick={() => setOpenTheme(!openTheme)}
+          />
 
-  {openTheme && (
-    <div className="ml-4 mt-2 space-y-1">
-
-      <button
-        className="
+          {openTheme && (
+            <div className="ml-4 mt-2 space-y-1">
+              <button
+                className="
           w-full text-left
           px-4 py-2
           text-sm
@@ -145,12 +135,12 @@ export default function Sidebar({
           text-gray-600
           hover:bg-gray-100
         "
-      >
-        🌞 Light
-      </button>
+              >
+                🌞 Light
+              </button>
 
-      <button
-        className="
+              <button
+                className="
           w-full text-left
           px-4 py-2
           text-sm
@@ -158,12 +148,12 @@ export default function Sidebar({
           text-gray-600
           hover:bg-gray-100
         "
-      >
-        🌙 Dark
-      </button>
+              >
+                🌙 Dark
+              </button>
 
-      <button
-        className="
+              <button
+                className="
           w-full text-left
           px-4 py-2
           text-sm
@@ -171,14 +161,12 @@ export default function Sidebar({
           text-gray-600
           hover:bg-gray-100
         "
-      >
-        💻 System
-      </button>
-
-    </div>
-  )}
-</div>
-
+              >
+                💻 System
+              </button>
+            </div>
+          )}
+        </div>
       </div>
     </aside>
   );
@@ -195,12 +183,7 @@ type SidebarItemProps = {
   onClick?: () => void;
 };
 
-function SidebarItem({
-  icon,
-  title,
-  active,
-  onClick,
-}: SidebarItemProps) {
+function SidebarItem({ icon, title, active, onClick }: SidebarItemProps) {
   return (
     <button
       onClick={onClick}
@@ -228,7 +211,6 @@ function SidebarItem({
         }
       `}
     >
-
       {icon}
 
       <span>{title}</span>

@@ -166,9 +166,10 @@ function HomePage() {
 
       {/* SEARCH + FILTER */}
 
-      <div className="flex items-center justify-between gap-6 flex-wrap mt-20 mb-6">
+      {/* <div className="flex items-center justify-between gap-6 flex-wrap mt-20 mb-6">
 
         <SearchBar onSearch={setSearch} />
+        
 
 
 
@@ -182,9 +183,38 @@ function HomePage() {
 
         />
 
-      </div>
+      </div> */}
 
+{/* <div className="mt-20 mb-6 flex flex-col sm:flex-row items-stretch sm:items-center gap-4 sm:gap-6">
+  
+  <SearchBar onSearch={setSearch} />
 
+  <GenreFilter
+    genres={genresData?.genres || []}
+    selectedGenre={selectedGenre}
+    onSelectGenre={setSelectedGenre}
+  />
+
+</div> */}
+<div className="mt-20 mb-6 w-full">
+  <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 sm:gap-6">
+    
+    {/* SearchBar */}
+    <div className="w-full sm:w-auto flex-1 min-w-0">
+      <SearchBar onSearch={setSearch} />
+    </div>
+
+    {/* Genre Filter */}
+    <div className="w-full sm:w-auto flex-shrink-0">
+      <GenreFilter
+        genres={genresData?.genres || []}
+        selectedGenre={selectedGenre}
+        onSelectGenre={setSelectedGenre}
+      />
+    </div>
+
+  </div>
+</div>
 
       {/* MOVIES HEADER */}
 
