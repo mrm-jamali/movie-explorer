@@ -5,7 +5,7 @@ import DashboardLayout from "../components/layout/DashboardLayout";
 import Sidebar from "../components/layout/Sidebar";
 import ProfileNavbar from "../components/profile/ProfileNavbar";
 
-import WatchList from "../components/WatchList";
+import WatchList from "../components/profile/WatchList";
 import MovieSection from "../components/profile/MovieSection";
 import ProfileSection from "../components/profile/ProfileSection";
 import OverviewSection from "../components/profile/OverviewSection";

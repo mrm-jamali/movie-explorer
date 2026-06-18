@@ -8,7 +8,7 @@ export default function QueryState({ isLoading, error, children }: Props) {
           <SkeletonCard key={i} />
         ))}
       </div>
-    );
+    )
   }
 
   if (error) {

@@ -37,13 +37,16 @@ export type GenresResponse = {
 //   items: Movie[];
 //   toggleWatchList: (movie: Movie) => void;
 // };
-export type MovieItemProps = {
-  movie: WatchMovie;
-  index: number;
-  items: WatchMovie[];
-  toggleWatchList: (movie: WatchMovie) => void;
-};
+// export type MovieItemProps = {
+//   movie: WatchMovie;
+//   index: number;
+//   items: WatchMovie[];
+//   toggleWatchList: (movie: WatchMovie) => void;
+// };
 
+export type MovieItemProps = {
+  movie: any;
+};
 
 export type WatchMovie = {
   id: number;

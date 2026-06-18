@@ -1,130 +1,64 @@
-import { Trash2 } from "lucide-react";
-
 import { useNavigate } from "react-router-dom";
-
 import { useFavorites } from "../../contexts/FavoriteContext";
+import { useEffect, useState } from "react";
+
+import QueryState from "../../components/QueryState";
+// import MovieItem from "../MovieItem";
+import MovieItem from "./MovieItem";
 
 export default function FavariteProfile() {
   const navigate = useNavigate();
-
   const { favorites, removeFavorite } = useFavorites();
 
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 800);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  console.log("favorites", favorites);
+
   return (
-    <div
-      className="
-        flex-1
-        bg-[#F8F9FB]
-        min-h-screen
-        px-10
-        py-10
-      "
-    >
+    <QueryState isLoading={isLoading} error={error}>
       {/* HEADER */}
-     <div className="mb-6">
-  <h2  className="text-[24px] font-bold text-[#111827]">
-    Favorites
-  </h2>
 
-  <p className="text-[15px] text-[#6B7280] mt-1">
-    Your favorite movies and TV shows
-  </p>
-</div>
+      {/* EMPTY STATE */}
+      {favorites.length === 0 ? (
+        <div className="py-16 text-center">
+          <div className="mb-4 text-5xl">🎬</div>
 
-  
-      {/* EMPTY */}
-     {favorites.length > 0 && (
+          <h3 className="text-lg font-semibold text-gray-800">
+            Your favorites list is empty
+          </h3>
 
-  <div className="rounded-3xl border border-gray-100 overflow-hidden bg-white">
-    {favorites.map((movie, index) => (
-      <div
-        key={movie.id}
-        className={`
-          flex items-center justify-between
-          px-6 py-5 bg-white
-          transition-all duration-200
-          hover:bg-gray-50
-          hover:shadow-sm
-          ${
-            index !== favorites.length - 1
-              ? "border-b border-gray-100"
-              : ""
-          }
-        `}
-      >
-        {/* LEFT */}
-        <div
-          className="flex items-center gap-5 cursor-pointer"
-          onClick={() => navigate(`/movie/${movie.id}`)}
-        >
-          <img
-            src={
-              movie.poster?.startsWith("http")
-                ? movie.poster
-                : `https://image.tmdb.org/t/p/w200${movie.poster}`
-            }
-            alt={movie.title}
-            className="w-20 h-20 rounded-xl object-cover"
-          />
-
-
-    <div>
-  <h3 className="text-[17px] font-semibold text-[#111827]">
-    {movie.title}
-  </h3>
-
-  <div className="flex items-center gap-3 mt-2">
-    <span className="text-[15px] text-[#6B7280]">
-      {movie.release_date?.slice(0, 4)}
-    </span>
-
-    <span className="px-3 py-1 rounded-full bg-[#F3F4F6] text-[#6B7280] text-[13px] font-medium">
-      Favorite
-    </span>
-  </div>
-</div>
-    </div>
-
-    {/* RIGHT */}
-    <button
-      onClick={() => removeFavorite(movie.id)}
-     className="
-  h-[46px]
-  px-5
-  rounded-xl
-  border border-[#E9D5FF]
-  bg-white
-  text-[#7C3AED]
-  text-[15px]
-  font-semibold
-  flex items-center gap-2
-  hover:bg-[#FAF5FF]
-  transition
-"
-    >
-     <Trash2 size={16} />
-      Remove
-    </button>
-  </div>
-))}
-
-
-  </div>
-)}
-
-
-      {/* GRID */}
-      {favorites.length > 0 && (
-        <div
-          className="
-            grid
-            grid-cols-5
-            gap-x-8
-            gap-y-10
-          "
-        >
-         
+          <p className="mt-2 text-sm text-gray-500">
+            Movies you mark as favorites will appear here.
+          </p>
+        </div>
+      ) : (
+        <div className="px-4 md:px-6">
+          <span className="px-3 py-1 rounded-full bg-[#F3F4F6] text-[#6B7280] text-[13px] font-medium">
+            Favorite
+          </span>
+          <div className="rounded-3xl border border-gray-100 overflow-hidden bg-white mt-6">
+            {favorites.map((movie, index) => (
+              <MovieItem
+                key={movie.id}
+                movie={movie}
+                index={index}
+                items={favorites}
+                enableDrag={false}
+                onRemove={() => removeFavorite(movie.id)} // ✅ FIX اصلی
+              />
+            ))}
+          </div>
         </div>
       )}
-    </div>
+    </QueryState>
   );
 }
