@@ -88,15 +88,16 @@ export default function MovieItem({
     </>
   );
 
-  const baseClasses = `
-    flex items-center justify-between 
-    px-4 sm:px-6 py-4 sm:py-5 
-    bg-white
-    transition-all duration-200
-    hover:bg-gray-50
-    hover:shadow-sm
-    ${index !== items.length - 1 ? "border-b border-gray-100" : ""}
-  `;
+const baseClasses = `
+  flex items-center justify-between
+  px-2 sm:px-4 md:px-6
+  py-3 sm:py-4 md:py-5
+  bg-white
+  transition-all duration-200
+  hover:bg-gray-50
+  hover:shadow-sm
+  ${index !== items.length - 1 ? "border-b border-gray-100" : ""}
+`;
 
   return enableDrag ? (
     <Reorder.Item

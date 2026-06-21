@@ -41,11 +41,11 @@ export default function FavariteProfile() {
           </p>
         </div>
       ) : (
-        <div className="px-4 md:px-6">
+       <div className="px-[2px] sm:px-4 md:px-6">
           <span className="px-3 py-1 rounded-full bg-[#F3F4F6] text-[#6B7280] text-[13px] font-medium">
             Favorite
           </span>
-          <div className="rounded-3xl border border-gray-100 overflow-hidden bg-white mt-6">
+       <div className="rounded-3xl border border-gray-100 overflow-hidden bg-white mt-6 mx-[2px] sm:mx-0">
             {favorites.map((movie, index) => (
               <MovieItem
                 key={movie.id}

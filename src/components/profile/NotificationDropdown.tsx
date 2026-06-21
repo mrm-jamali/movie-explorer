@@ -1,26 +1,14 @@
-import {
-  Bell,
-  Check,
-  Film,
-  Heart,
-  Star,
-} from "lucide-react";
-
-import {
-  useState,
-  useRef,
-  useEffect,
-  useMemo,
-} from "react";
-
+import { Bell, Check, Trash2 } from "lucide-react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import { useAuth } from "../../contexts/AuthContext";
 
 export default function NotificationDropdown() {
   const [open, setOpen] = useState(false);
-  const notificationRef = useRef<HTMLDivElement>(null);
+  const [showAll, setShowAll] = useState(false);
+
+  const notificationRef = useRef<HTMLDivElement | null>(null);
 
   const { user, syncCurrentUser } = useAuth();
-
   const notifications = user?.notifications || [];
 
   /* CLOSE OUTSIDE CLICK */
@@ -39,7 +27,16 @@ export default function NotificationDropdown() {
       document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  /* UNREAD COUNT */
+  /* LAST 10 ONLY */
+  const lastNotifications = useMemo(() => {
+    return [...notifications].slice(-10).reverse();
+  }, [notifications]);
+
+  const visibleNotifications = showAll
+    ? lastNotifications
+    : lastNotifications.slice(0, 3);
+
+  /* UNREAD */
   const unreadCount = useMemo(() => {
     return notifications.filter((n) => !n.read).length;
   }, [notifications]);
@@ -59,11 +56,16 @@ export default function NotificationDropdown() {
     });
   };
 
-  /* ICON */
-  const getIcon = (type: string) => {
-    if (type === "favorite") return <Heart size={18} />;
-    if (type === "watchlist") return <Film size={18} />;
-    return <Star size={18} />;
+  /* DELETE ONE */
+  const deleteNotification = (id: string) => {
+    if (!user) return;
+
+    const updated = notifications.filter((n) => n.id !== id);
+
+    syncCurrentUser({
+      ...user,
+      notifications: updated,
+    });
   };
 
   return (
@@ -72,20 +74,12 @@ export default function NotificationDropdown() {
       {/* BUTTON */}
       <button
         onClick={() => setOpen(!open)}
-        className="
-          relative w-11 h-11 rounded-2xl
-          bg-[#F3F4F6]
-          flex items-center justify-center
-          hover:bg-gray-200 transition
-        "
+        className="relative w-11 h-11 rounded-2xl bg-[#F3F4F6] flex items-center justify-center hover:bg-gray-200 transition"
       >
         <Bell size={20} className="text-gray-700" />
 
         {unreadCount > 0 && (
-          <span className="
-            absolute top-2 right-2
-            w-2 h-2 rounded-full bg-red-500
-          " />
+          <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-red-500" />
         )}
       </button>
 
@@ -98,26 +92,19 @@ export default function NotificationDropdown() {
         ">
 
           {/* HEADER */}
-          <div className="
-            px-5 py-4 border-b border-gray-100
-            flex items-center justify-between
-          ">
+          <div className="px-5 py-4 border-b border-gray-100 flex justify-between">
             <div>
               <h3 className="text-sm font-semibold text-gray-800">
                 Notifications
               </h3>
-
               <p className="text-xs text-gray-500 mt-1">
-                Latest updates from MovieExplorer
+                Latest updates
               </p>
             </div>
 
             <button
               onClick={markAllAsRead}
-              className="
-                text-xs text-purple-500
-                hover:text-purple-600 font-medium
-              "
+              className="text-xs text-purple-500 font-medium"
             >
               Mark all read
             </button>
@@ -125,13 +112,12 @@ export default function NotificationDropdown() {
 
           {/* ITEMS */}
           <div className="max-h-[350px] overflow-y-auto">
-
             {notifications.length === 0 ? (
               <p className="p-5 text-sm text-gray-500">
                 No notifications yet
               </p>
             ) : (
-              notifications.map((item) => (
+              visibleNotifications.map((item) => (
                 <div
                   key={item.id}
                   className={`
@@ -143,18 +129,13 @@ export default function NotificationDropdown() {
                 >
 
                   {/* ICON */}
-                  <div className="
-                    w-10 h-10 rounded-2xl
-                    bg-purple-100 text-purple-600
-                    flex items-center justify-center shrink-0
-                  ">
-                    {getIcon(item.type)}
+                  <div className="w-10 h-10 rounded-2xl bg-purple-100 flex items-center justify-center shrink-0">
+                    <Bell size={16} className="text-purple-600" />
                   </div>
 
                   {/* TEXT */}
                   <div className="flex-1">
                     <div className="flex items-center justify-between">
-
                       <h4 className="text-sm font-semibold text-gray-800">
                         {item.title}
                       </h4>
@@ -162,7 +143,6 @@ export default function NotificationDropdown() {
                       <span className="text-[11px] text-gray-400">
                         {new Date(item.time).toLocaleTimeString()}
                       </span>
-
                     </div>
 
                     <p className="text-sm text-gray-500 mt-1">
@@ -170,26 +150,32 @@ export default function NotificationDropdown() {
                     </p>
                   </div>
 
+                  {/* DELETE */}
+                  <button
+                    onClick={() => deleteNotification(item.id)}
+                    className="text-gray-400 hover:text-red-500 transition"
+                  >
+                    <Trash2 size={16} />
+                  </button>
                 </div>
               ))
             )}
-
           </div>
 
           {/* FOOTER */}
           <div className="p-4 border-t border-gray-100">
-
-            <button className="
-              w-full h-11 rounded-2xl
-              bg-purple-500 text-white
-              text-sm font-medium
-              hover:bg-purple-600 transition
-              flex items-center justify-center gap-2
-            ">
+            <button
+              onClick={() => setShowAll((p) => !p)}
+              className="
+                w-full h-11 rounded-2xl
+                bg-purple-500 text-white
+                text-sm font-medium
+                flex items-center justify-center gap-2
+              "
+            >
               <Check size={16} />
-              View all notifications
+              {showAll ? "Hide" : "View all notifications"}
             </button>
-
           </div>
 
         </div>
