@@ -8,17 +8,13 @@ import OverviewSection from "../components/profile/OverviewSection";
 import FavariteProfile from "../components/profile/FavariteProfile";
 
 import { Menu } from "lucide-react";
+import type { Section } from "../types/section";
 
-type Section =
-  | "overview"
-  | "movie"
-  | "watchlist"
-  | "favorites"
-  | "profile"
-  | "theme";
 
 export default function ProfilePage() {
+ 
   const [section, setSection] = useState<Section>("overview");
+  
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
 

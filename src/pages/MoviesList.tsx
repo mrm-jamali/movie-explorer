@@ -28,7 +28,7 @@ export default function MoviesList() {
     setPage(1);
   };
 
-  const { data } = useQuery({
+  const { data, isLoading, error  } = useQuery({
     queryKey: ["movies", page, selectedGenres.join(","), releaseYear, rating],
     queryFn: () =>
       fetchFilteredMovies(page, selectedGenres, releaseYear, rating),
@@ -54,7 +54,7 @@ export default function MoviesList() {
   };
 
   return (
-    <QueryState>
+    <QueryState isLoading={isLoading} error={error}>
       <div className="max-w-7xl mx-auto px-4 mt-6">
         {/* TITLE */}
         <div className="mb-6">

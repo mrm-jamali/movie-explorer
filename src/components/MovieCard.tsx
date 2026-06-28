@@ -24,13 +24,16 @@ export default function MovieCard({ movie, showFavorite = true }: Props) {
 
   const fav = isFavorite(movie.id);
 
-  const formattedMovie = {
-    id: movie.id,
-    title: movie.title,
-    poster: movie.poster_path || "",
-    release_date: movie.release_date || "",
-    rating: movie.vote_average || 0,
-  };
+const formattedMovie = {
+  id: movie.id,
+  title: movie.title,
+  poster_path: movie.poster_path || "",
+  backdrop_path: "",
+  overview: "",
+  release_date: movie.release_date || "",
+  genre_ids: [],
+  vote_average: movie.vote_average || 0,
+};
 
   return (
     <div className="group cursor-pointer">

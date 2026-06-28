@@ -4,13 +4,14 @@ import { useState, useEffect } from "react";
 
 import QueryState from "../QueryState";
 import MovieItem from "./MovieItem";
+// import type { MovieItemProps } from "../../types/movie";
 
 export default function WatchList() {
   const { watchList, toggleWatchList } = useWatchList();
 
   const [items, setItems] = useState(watchList);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<Error | null>(null);
+  const [error] = useState<Error | null>(null);
 
   useEffect(() => {
     setItems(watchList);

@@ -7,6 +7,7 @@ export type Movie = {
   release_date: string;
   genre_ids: number[];
   vote_average: number;
+   genres?: Genre[];
 };
 
 export type MoviesResponse = {
@@ -21,6 +22,7 @@ export type Genre = {
   name: string;
 };
 
+
 export type GenresResponse = {
   genres: Genre[];
 };
@@ -30,3 +32,4 @@ export type MovieItemProps = {
   index: number;
   items: Movie[];
 };
+

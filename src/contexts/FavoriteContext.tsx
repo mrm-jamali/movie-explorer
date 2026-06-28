@@ -1,5 +1,6 @@
 import { createContext, useContext } from "react";
-import type { Movie } from "../types/movie";
+// import type { Movie } from "../types/movie";
+import type { MovieItem } from "../types/user";
 import { useAuth } from "./AuthContext";
 
 // type FavoriteMovie = {
@@ -11,8 +12,8 @@ import { useAuth } from "./AuthContext";
 // };
 
 type FavoriteContextType = {
-  favorites: Movie[];
-  toggleFavorite: (movie: Movie) => void;
+  favorites:MovieItem[];
+  toggleFavorite: (movie: MovieItem) => void;
   removeFavorite: (id: number) => void;
   isFavorite: (id: number) => boolean;
 };
@@ -31,10 +32,11 @@ export function FavoriteProvider({
     syncCurrentUser,
   } = useAuth();
 
-  const favorites =
-    user?.favorites || [];
+  // const favorites =
+  //   user?.favorites || [];
+  const favorites: MovieItem[] = user?.favorites ?? [];
 
-  const toggleFavorite = (movie: Movie) => {
+  const toggleFavorite = (movie: MovieItem) => {
     if (!user) return;
 
     const exists =

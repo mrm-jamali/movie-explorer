@@ -1,8 +1,9 @@
 import { Trash2, GripVertical } from "lucide-react";
 import { Reorder, useDragControls } from "framer-motion";
-import type { MovieItemProps } from "../../types/movie";
 
-type Props = MovieItemProps & {
+
+type Props = {
+  movie: any;
   index: number;
   items: any[];
   enableDrag?: boolean;

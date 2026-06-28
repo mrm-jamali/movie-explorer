@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+
 import { useFavorites } from "../../contexts/FavoriteContext";
 import { useEffect, useState } from "react";
 import { Clapperboard } from "lucide-react";
@@ -8,11 +8,11 @@ import QueryState from "../../components/QueryState";
 import MovieItem from "./MovieItem";
 
 export default function FavariteProfile() {
-  const navigate = useNavigate();
+ 
   const { favorites, removeFavorite } = useFavorites();
 
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<Error | null>(null);
+  const [error] = useState<Error | null>(null);
 
   useEffect(() => {
     const timer = setTimeout(() => {

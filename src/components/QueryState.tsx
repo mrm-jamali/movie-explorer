@@ -1,4 +1,11 @@
 import SkeletonCard from "./SkeletonCard";
+import type { ReactNode } from "react";
+
+type Props = {
+  isLoading: boolean;
+  error: unknown;
+  children: ReactNode;
+};
 
 export default function QueryState({ isLoading, error, children }: Props) {
   if (isLoading) {

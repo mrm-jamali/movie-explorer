@@ -10,24 +10,27 @@ import { useAuth } from "../../contexts/AuthContext";
 
 import NotificationDropdown from "./NotificationDropdown";
 
-type Props = {
-  section: string;
-  setSection: (section: string) => void;
-};
 
+import type { Section } from "../../types/section"
+
+type Props = {
+  section: Section;
+  setSection: React.Dispatch<React.SetStateAction<Section>>;
+  
+};
 export default function ProfileNavbar({
-  section,
+  
   setSection,
 }: Props) {
-
-  const titles: Record<string, string> = {
-    overview: "Overview",
-    watchlist: "Watchlist",
-    favorites: "Favorites",
-    profile: "Profile",
-    movie: "Movie",
-    theme: "Theme",
-  };
+ 
+  // const titles: Record<string, string> = {
+  //   overview: "Overview",
+  //   watchlist: "Watchlist",
+  //   favorites: "Favorites",
+  //   profile: "Profile",
+  //   movie: "Movie",
+  //   theme: "Theme",
+  // };
 
 
   const { user, logout } = useAuth();

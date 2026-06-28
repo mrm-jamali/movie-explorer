@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 
 import HeroSlider from "./HeroSlider";
 import {
-  fetchHeroMovies,
+ 
   fetchTrendingMovies,
 } from "../../services/movieApi";
 
@@ -12,10 +12,10 @@ export default function OverviewSection() {
   const { user } = useAuth();
   const navigate = useNavigate();
 
-  const heroQuery = useQuery({
-    queryKey: ["hero"],
-    queryFn: fetchHeroMovies,
-  });
+  // const heroQuery = useQuery({
+  //   queryKey: ["hero"],
+  //   queryFn: fetchHeroMovies,
+  // });
 
   const trendingQuery = useQuery({
     queryKey: ["trending"],

@@ -2,11 +2,10 @@ import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 
 import { Link } from "react-router-dom";
-import { Heart,Star,Bookmark } from "lucide-react";
+import { Heart, Star, Bookmark } from "lucide-react";
 import QueryState from "../components/QueryState";
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
-
 
 import {
   fetchMovieDetails,
@@ -18,6 +17,7 @@ import { useFavorites } from "../contexts/FavoriteContext";
 import { useWatchList } from "../contexts/WatchListContext";
 import { useAuth } from "../contexts/AuthContext";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import type { Movie } from "../types/movie";
 
 function MovieDetails() {
   const { id } = useParams();
@@ -28,7 +28,7 @@ function MovieDetails() {
   const { user } = useAuth();
 
   //  Movie details
-  const { data, isLoading, error } = useQuery({
+  const { data, isLoading, error } = useQuery<Movie>({
     queryKey: ["movie", id],
     queryFn: () => fetchMovieDetails(id!),
   });
@@ -61,7 +61,7 @@ function MovieDetails() {
   const watchListed = data ? isInWatchList(data.id) : false;
   const filteredSimilar =
     similarData?.results?.filter((movie: any) => movie.poster_path) ?? [];
-
+  console.log(data);
   return (
     <QueryState isLoading={isLoading} error={error}>
       {!data ? null : (
@@ -84,7 +84,7 @@ function MovieDetails() {
               <div className="flex flex-wrap items-center gap-2 text-sm text-gray-500 mt-2">
                 <span>{data.release_date?.slice(0, 4)}</span>
 
-                {data.genres?.map((g: any) => (
+                {data.genres?.map((g) => (
                   <span
                     key={g.id}
                     className="bg-gray-100 px-2 py-1 rounded-full text-xs"
@@ -96,10 +96,8 @@ function MovieDetails() {
 
               {/* Rating */}
               <div className="text-yellow-500 font-semibold mt-3">
-                 <Star
-                        size={14}
-                        className="text-yellow-400 fill-yellow-400"
-                      />{data.vote_average?.toFixed(1)}
+                <Star size={14} className="text-yellow-400 fill-yellow-400" />
+                {data.vote_average?.toFixed(1)}
               </div>
 
               {/* ACTION BUTTONS */}
@@ -111,13 +109,15 @@ function MovieDetails() {
                       alert("Please login first");
                       return;
                     }
-
                     toggleFavorite({
                       id: data.id,
                       title: data.title,
-                      poster: data.poster_path,
+                      poster_path: data.poster_path,
                       release_date: data.release_date,
-                      rating: data.vote_average,
+                      vote_average: data.vote_average,
+                      overview: data.overview,
+                      backdrop_path: data.backdrop_path,
+                      genre_ids: data.genre_ids,
                     });
                   }}
                   className={`flex items-center gap-2 px-5 py-2 rounded-lg transition ${
@@ -143,13 +143,12 @@ function MovieDetails() {
                       alert("Please login first");
                       return;
                     }
-
                     toggleWatchList({
                       id: data.id,
                       title: data.title,
-                      poster: data.poster_path,
+                      poster_path: data.poster_path,
                       release_date: data.release_date,
-                      rating: data.vote_average,
+                      vote_average: data.vote_average,
                     });
                   }}
                   className={`flex items-center gap-2 px-5 py-2 rounded-lg transition ${
@@ -192,7 +191,7 @@ function MovieDetails() {
             </div>
           )}
           {/* SIMILAR MOVIES */}
-      
+
           {filteredSimilar.length > 0 && (
             <div className="mt-12">
               <h2 className="text-lg font-bold mb-4">Similar Movies</h2>

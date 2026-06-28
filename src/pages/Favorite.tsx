@@ -70,7 +70,7 @@ export default function Favorites() {
             >
               {/* POSTER */}
               <img
-                src={`https://image.tmdb.org/t/p/w300${movie.poster}`}
+                src={`https://image.tmdb.org/t/p/w300${movie.poster_path}`}
                 className="w-[110px] h-[150px] object-cover rounded-xl"
               />
 
@@ -92,7 +92,7 @@ export default function Favorites() {
                         size={14}
                         className="text-yellow-400 fill-yellow-400"
                       />
-                      {movie.rating?.toFixed(1) || "N/A"}
+                     {movie.vote_average?.toFixed(1) || "N/A"}
                     </span>
                   </div>
 

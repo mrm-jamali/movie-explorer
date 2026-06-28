@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { Star, Heart, Bookmark, User } from "lucide-react";
+import {  Heart, Bookmark, User } from "lucide-react";
 
 import { useAuth } from "../../contexts/AuthContext";
 

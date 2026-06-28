@@ -1,6 +1,6 @@
 import type {GenresResponse,MoviesResponse } from "../types/movie";
 
-
+import type { Movie } from "../types/movie";
 
 const BASE_URL = "https://api.themoviedb.org/3";
 
@@ -89,11 +89,22 @@ export const fetchSearchMovies = async (
   return res.json();
 };
 
-export const fetchMovieDetails = async (id: string) => {
+// export const fetchMovieDetails = async (id: string) => {
+//   const res = await fetch(
+//     `${BASE_URL}/movie/${id}?api_key=${API_KEY}`
+//   );
+//   if (!res.ok) throw new Error("Failed to fetch movie");
+//   return res.json();
+// };
+
+
+export const fetchMovieDetails = async (id: string): Promise<Movie> => {
   const res = await fetch(
     `${BASE_URL}/movie/${id}?api_key=${API_KEY}`
   );
+
   if (!res.ok) throw new Error("Failed to fetch movie");
+
   return res.json();
 };
 
