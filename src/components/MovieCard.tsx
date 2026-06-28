@@ -9,8 +9,12 @@ type Props = {
     poster_path?: string;
     release_date?: string;
     vote_average?: number;
+
   };
   showFavorite?: boolean;
+    isFavorite?: boolean;
+      onFavorite?: () => void;
+  onToast?: (msg: string) => void;
 };
 
 export default function MovieCard({ movie, showFavorite = true }: Props) {
@@ -55,7 +59,7 @@ export default function MovieCard({ movie, showFavorite = true }: Props) {
 </Link>
       {/* INFO */}
       <div className="mt-2.5">
-        <h3 className="truncate text-[14px] font-medium text-[#111827]">
+        <h3 className="truncate text-[14px] font-medium text-[#111827] ">
           {movie.title}
         </h3>
 

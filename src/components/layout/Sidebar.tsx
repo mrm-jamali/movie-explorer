@@ -6,6 +6,9 @@ import {
   User,
   Palette,
   ArrowLeft,
+  Monitor,
+  Moon,
+  Sun,
 } from "lucide-react";
 
 import { useState } from "react";
@@ -54,7 +57,7 @@ export default function Sidebar({ section, setSection }: SidebarProps) {
               text-lg
             "
           >
-            🎬
+       <Clapperboard size={26} className="text-white/90" />
           </div>
 
           <h1
@@ -136,7 +139,7 @@ export default function Sidebar({ section, setSection }: SidebarProps) {
           hover:bg-gray-100
         "
               >
-                🌞 Light
+                <Sun size={16} className="text-yellow-500" /> Light
               </button>
 
               <button
@@ -149,7 +152,7 @@ export default function Sidebar({ section, setSection }: SidebarProps) {
           hover:bg-gray-100
         "
               >
-                🌙 Dark
+                <Moon size={16} className="text-indigo-500" /> Dark
               </button>
 
               <button
@@ -162,7 +165,7 @@ export default function Sidebar({ section, setSection }: SidebarProps) {
           hover:bg-gray-100
         "
               >
-                💻 System
+                <Monitor size={16} className="text-purple-500" /> System
               </button>
             </div>
           )}

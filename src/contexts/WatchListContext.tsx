@@ -1,8 +1,9 @@
 import {
   createContext,
   useContext,
-  ReactNode,
+ 
 } from "react";
+import type { ReactNode } from "react";
 
 import { useAuth } from "./AuthContext";
 
@@ -62,7 +63,7 @@ export function WatchListProvider({
       type: "watchlist" as const,
       movieId: movie.id,
       title: movie.title,
-      poster_path: movie.poster_path, // ✅ FIX: unified naming
+      poster_path: movie.poster_path,
       time: new Date().toISOString(),
     };
 

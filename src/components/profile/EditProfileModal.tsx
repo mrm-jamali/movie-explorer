@@ -46,7 +46,7 @@ export default function EditProfileModal({
       id: crypto.randomUUID(),
       type: "profile" as const,
       title: "Profile updated",
-      poster: formData.avatar,
+        poster_path: formData.avatar,
       movieId: 0,
       time: new Date().toISOString(),
     };

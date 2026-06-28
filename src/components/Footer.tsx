@@ -21,7 +21,7 @@ export default function Footer() {
           {/* Brand */}
           <div>
             <h2 className="text-2xl font-bold tracking-wide">
-              🎬 MovieExplorer
+               MovieExplorer
             </h2>
 
             <p className="text-sm text-gray-400 mt-5 leading-relaxed">
@@ -116,7 +116,7 @@ export default function Footer() {
           </p>
 
           <p className="text-purple-400/80 hover:text-purple-300 transition">
-            Built for portfolio purposes 🚀
+            Built for portfolio purposes 
           </p>
 
         </div>

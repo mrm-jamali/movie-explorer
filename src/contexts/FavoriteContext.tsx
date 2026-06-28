@@ -1,36 +1,21 @@
-import {
-  createContext,
-  useContext,
-} from "react";
-
-
-
+import { createContext, useContext } from "react";
+import type { Movie } from "../types/movie";
 import { useAuth } from "./AuthContext";
 
-type FavoriteMovie = {
-  id: number;
-  title: string;
-  poster: string;
-  release_date: string;
-  rating: number;
-};
+// type FavoriteMovie = {
+//   id: number;
+//   title: string;
+//   poster: string;
+//   release_date: string;
+//   rating: number;
+// };
 
 type FavoriteContextType = {
-  favorites: FavoriteMovie[];
-
-  toggleFavorite: (
-    movie: FavoriteMovie
-  ) => void;
-
-  removeFavorite: (
-    id: number
-  ) => void;
-
-  isFavorite: (
-    id: number
-  ) => boolean;
+  favorites: Movie[];
+  toggleFavorite: (movie: Movie) => void;
+  removeFavorite: (id: number) => void;
+  isFavorite: (id: number) => boolean;
 };
-
 const FavoriteContext =
   createContext<
     FavoriteContextType | null
@@ -49,9 +34,7 @@ export function FavoriteProvider({
   const favorites =
     user?.favorites || [];
 
-  const toggleFavorite = (
-    movie: FavoriteMovie
-  ) => {
+  const toggleFavorite = (movie: Movie) => {
     if (!user) return;
 
     const exists =
@@ -77,7 +60,7 @@ export function FavoriteProvider({
       type: "favorite" as const,
       movieId: movie.id,
       title: movie.title,
-      poster: movie.poster,
+     poster_path: movie.poster_path,
       time: new Date().toISOString(),
     };
 
@@ -156,7 +139,7 @@ export function FavoriteProvider({
       (m) => m.id === id
     ) ?? false;
 
-  return (
+  return ( 
     <FavoriteContext.Provider
       value={{
         favorites,

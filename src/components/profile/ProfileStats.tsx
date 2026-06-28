@@ -68,7 +68,8 @@ export default function ProfileStats() {
     <div className="space-y-6">
       {/* HEADER */}
       <div>
-        <h2 className="text-2xl font-bold text-gray-900">
+        <h2 className="text-2xl font-bold text-gray-900   mt-6
+">
           Your Statistics
         </h2>
 

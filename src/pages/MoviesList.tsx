@@ -5,8 +5,9 @@ import Pagination from "../components/Pagination";
 import { useEffect, useRef, useState } from "react";
 import MoviesFilter from "../components/MoviesFilter";
 import { useFilterStore } from "../store/filterStore";
-import { Link } from "react-router-dom";
 import QueryState from "../components/QueryState";
+import { X } from "lucide-react";
+
 
 export default function MoviesList() {
   const [page, setPage] = useState(1);
@@ -124,7 +125,7 @@ export default function MoviesList() {
           </div>
         </div>
 
-        {/* MOBILE OVERLAY - بدون تغییر */}
+        {/* MOBILE OVERLAY    */}
         {mobileFiltersOpen && (
           <div className="fixed inset-0 z-50 lg:hidden flex">
             {/* BACKDROP */}
@@ -141,7 +142,7 @@ export default function MoviesList() {
                   onClick={() => setMobileFiltersOpen(false)}
                   className="text-2xl"
                 >
-                  ✕
+                   <X size={24} />
                 </button>
               </div>
 

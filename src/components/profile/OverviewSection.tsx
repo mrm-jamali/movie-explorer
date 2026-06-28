@@ -27,7 +27,7 @@ export default function OverviewSection() {
   return (
     <div className="max-w-6xl mx-auto px-4 md:px-6">
 
-      {/* ================= HERO ================= */}
+      {/*  HERO  */}
       <section className="pt-6 md:pt-8">
 
         {/* 💻 DESKTOP HERO TEXT */}
@@ -41,7 +41,7 @@ export default function OverviewSection() {
           </p>
         </div>
 
-        {/* 📱 MOBILE HERO (clean + modern) */}
+        {/*  MOBILE HERO (clean + modern) */}
         <div className="sm:hidden mb-6">
           <div className="relative overflow-hidden rounded-2xl p-5 bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-600 text-white">
 
@@ -49,7 +49,7 @@ export default function OverviewSection() {
             <div className="absolute -bottom-10 -left-10 w-24 h-24 bg-white/10 rounded-full blur-2xl" />
 
             <h2 className="text-base font-semibold">
-              Hi {user?.username} 👋
+              Hi {user?.username} 
             </h2>
 
             <p className="text-xs opacity-80 mt-1">
@@ -73,7 +73,7 @@ export default function OverviewSection() {
 
       </section>
 
-      {/* ================= TRENDING ================= */}
+      {/*  TRENDING  */}
       <section className="mt-6 md:mt-10 pb-10">
 
         <div className="mb-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">

@@ -8,7 +8,7 @@ export type MovieItem = {
 
 export type Activity = {
   id: string;
-  type: "favorite" | "watchlist";
+  type: "favorite" | "watchlist" | "profile";
   movieId: number;
   title: string;
   poster_path: string;
@@ -38,8 +38,8 @@ export type User = {
 
   favorites: MovieItem[];
   watchlist: MovieItem[];
-
+  watched: MovieItem[];
   activities: Activity[];
-
+ bio?: string; 
   notifications: Notification[];
 };

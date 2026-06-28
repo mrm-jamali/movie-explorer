@@ -15,7 +15,6 @@ import { FavoriteProvider } from "./contexts/FavoriteContext";
 import { AuthProvider } from "./contexts/AuthContext";
 import { WatchListProvider } from "./contexts/WatchListContext";
 
-
 import ProtectedRoute from "./routes/ProtectedRoute";
 
 function App() {
@@ -72,9 +71,9 @@ function App() {
               <Route
                 path="/favorite"
                 element={
-                  <ProtectedRoute>
+                  <SiteLayout>
                     <Favorite />
-                  </ProtectedRoute>
+                  </SiteLayout>
                 }
               />
             </Routes>

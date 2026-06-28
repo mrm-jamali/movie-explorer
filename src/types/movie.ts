@@ -4,15 +4,10 @@ export type Movie = {
   poster_path: string;
   backdrop_path: string;
   overview: string;
-    release_date: string;
+  release_date: string;
   genre_ids: number[];
-    vote_average: number;
+  vote_average: number;
 };
-
-
-// export type MoviesResponse = {
-//   results: Movie[];
-// };
 
 export type MoviesResponse = {
   page: number;
@@ -30,28 +25,8 @@ export type GenresResponse = {
   genres: Genre[];
 };
 
-
-// export type MovieItemProps = {
-//   movie: Movie;
-//   index: number;
-//   items: Movie[];
-//   toggleWatchList: (movie: Movie) => void;
-// };
-// export type MovieItemProps = {
-//   movie: WatchMovie;
-//   index: number;
-//   items: WatchMovie[];
-//   toggleWatchList: (movie: WatchMovie) => void;
-// };
-
 export type MovieItemProps = {
-  movie: any;
-};
-
-export type WatchMovie = {
-  id: number;
-  title: string;
-  poster_path: string;
-  release_date: string;
-  vote_average: number;
+  movie: Movie;
+  index: number;
+  items: Movie[];
 };

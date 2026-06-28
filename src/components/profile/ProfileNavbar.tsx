@@ -90,7 +90,7 @@ export default function ProfileNavbar({
     <div className="relative">
 
 
-      {/* ================= TOP BAR ================= */}
+      {/* TOP BAR  */}
 
       <div
         className="
@@ -105,22 +105,25 @@ export default function ProfileNavbar({
 
 
         {/* LEFT - TITLE */}
+<h2
+  className="
+  text-xl
+  md:text-2xl
+  font-bold
+  text-gray-900
+  ml-2
+  lg:ml-14
+  flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2
+  "
+>
+  <span className="text-gray-700 font-medium">
+    Welcome to Movie Explorer
+  </span>
 
-        <h2
-          className="
-          text-xl
-          md:text-2xl
-          font-bold
-          text-gray-900
-          truncate
-          max-w-[150px]
-          sm:max-w-none
-          ml-2
-          lg:ml-14
-          "
-        >
-          {titles[section]}
-        </h2>
+  <span className="text-purple-600 text-lg md:text-xl">
+    {user?.username || "User"}
+  </span>
+</h2>
 
 
 

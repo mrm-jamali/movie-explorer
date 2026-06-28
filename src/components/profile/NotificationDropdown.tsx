@@ -5,9 +5,7 @@ import { useAuth } from "../../contexts/AuthContext";
 export default function NotificationDropdown() {
   const [open, setOpen] = useState(false);
   const [showAll, setShowAll] = useState(false);
-
   const notificationRef = useRef<HTMLDivElement | null>(null);
-
   const { user, syncCurrentUser } = useAuth();
   const notifications = user?.notifications || [];
 
@@ -23,8 +21,7 @@ export default function NotificationDropdown() {
     };
 
     document.addEventListener("mousedown", handleClickOutside);
-    return () =>
-      document.removeEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   /* LAST 10 ONLY */
@@ -70,7 +67,6 @@ export default function NotificationDropdown() {
 
   return (
     <div ref={notificationRef} className="relative">
-
       {/* BUTTON */}
       <button
         onClick={() => setOpen(!open)}
@@ -85,21 +81,21 @@ export default function NotificationDropdown() {
 
       {/* DROPDOWN */}
       {open && (
-        <div className="
-          absolute right-0 top-16 w-[360px]
+        <div
+          className="
+        absolute top-16 -right-[70px]
+          w-[calc(100vw-32px)] sm:w-[360px]
           bg-white border border-gray-200
           rounded-3xl shadow-2xl overflow-hidden z-50
-        ">
-
+        "
+        >
           {/* HEADER */}
-          <div className="px-5 py-4 border-b border-gray-100 flex justify-between">
+          <div className="px-4 sm:px-5 py-4 border-b border-gray-100 flex justify-between gap-3">
             <div>
               <h3 className="text-sm font-semibold text-gray-800">
                 Notifications
               </h3>
-              <p className="text-xs text-gray-500 mt-1">
-                Latest updates
-              </p>
+              <p className="text-xs text-gray-500 mt-1">Latest updates</p>
             </div>
 
             <button
@@ -113,21 +109,18 @@ export default function NotificationDropdown() {
           {/* ITEMS */}
           <div className="max-h-[350px] overflow-y-auto">
             {notifications.length === 0 ? (
-              <p className="p-5 text-sm text-gray-500">
-                No notifications yet
-              </p>
+              <p className="p-5 text-sm text-gray-500">No notifications yet</p>
             ) : (
               visibleNotifications.map((item) => (
                 <div
                   key={item.id}
                   className={`
-                    px-5 py-4 flex items-start gap-4
+                    px-4 sm:px-5 py-4 flex items-start gap-3 sm:gap-4
                     hover:bg-gray-50 transition
                     border-b border-gray-100 last:border-none
                     ${!item.read ? "bg-purple-50" : ""}
                   `}
                 >
-
                   {/* ICON */}
                   <div className="w-10 h-10 rounded-2xl bg-purple-100 flex items-center justify-center shrink-0">
                     <Bell size={16} className="text-purple-600" />
@@ -135,7 +128,7 @@ export default function NotificationDropdown() {
 
                   {/* TEXT */}
                   <div className="flex-1">
-                    <div className="flex items-center justify-between">
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
                       <h4 className="text-sm font-semibold text-gray-800">
                         {item.title}
                       </h4>
@@ -145,9 +138,7 @@ export default function NotificationDropdown() {
                       </span>
                     </div>
 
-                    <p className="text-sm text-gray-500 mt-1">
-                      {item.message}
-                    </p>
+                    <p className="text-sm text-gray-500 mt-1">{item.message}</p>
                   </div>
 
                   {/* DELETE */}
@@ -163,7 +154,7 @@ export default function NotificationDropdown() {
           </div>
 
           {/* FOOTER */}
-          <div className="p-4 border-t border-gray-100">
+          <div className="p-3 sm:p-4 border-t border-gray-100">
             <button
               onClick={() => setShowAll((p) => !p)}
               className="
@@ -177,7 +168,6 @@ export default function NotificationDropdown() {
               {showAll ? "Hide" : "View all notifications"}
             </button>
           </div>
-
         </div>
       )}
     </div>

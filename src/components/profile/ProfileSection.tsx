@@ -11,7 +11,7 @@ export default function ProfileSection() {
   const [openEditModal, setOpenEditModal] = useState(false);
 
   return (
-    <div className="px-4 sm:px-6 lg:px-0">
+<div className="px-4 sm:px-8 lg:px-12">
       {/* HEADER */}
       <div className="mb-6">
         <h1 className="text-2xl sm:text-3xl lg:text-[32px] font-bold text-[#111827]">
@@ -77,7 +77,7 @@ export default function ProfileSection() {
             </div>
 
             <p className="mt-1 text-xs sm:text-sm text-slate-400">
-              Welcome back 👋
+              Welcome back 
             </p>
 
             <div className="mt-4 flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-5 text-xs sm:text-sm text-slate-500 justify-center sm:justify-start">

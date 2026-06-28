@@ -1,5 +1,4 @@
 
-
 import { useAuth } from "../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import RegisterForm from "../components/auth/RegisterForm";

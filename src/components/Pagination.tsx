@@ -44,7 +44,7 @@ export default function Pagination({
         Prev
       </button>
 
-      {/* Pages (محدود برای موبایل) */}
+      {/* Pages mobile version */}
       <div className="flex items-center gap-1 sm:gap-2 flex-wrap justify-center">
 
         {pages.map((num) => (
