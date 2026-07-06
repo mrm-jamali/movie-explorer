@@ -1,8 +1,4 @@
-import {
-  ChevronDown,
-  User,
-  LogOut,
-} from "lucide-react";
+import { ChevronDown, User, LogOut } from "lucide-react";
 
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
@@ -10,19 +6,13 @@ import { useAuth } from "../../contexts/AuthContext";
 
 import NotificationDropdown from "./NotificationDropdown";
 
-
-import type { Section } from "../../types/section"
+import type { Section } from "../../types/section";
 
 type Props = {
   section: Section;
   setSection: React.Dispatch<React.SetStateAction<Section>>;
-  
 };
-export default function ProfileNavbar({
-  
-  setSection,
-}: Props) {
- 
+export default function ProfileNavbar({ setSection }: Props) {
   // const titles: Record<string, string> = {
   //   overview: "Overview",
   //   watchlist: "Watchlist",
@@ -32,115 +22,68 @@ export default function ProfileNavbar({
   //   theme: "Theme",
   // };
 
-
   const { user, logout } = useAuth();
   const navigate = useNavigate();
-
 
   const [open, setOpen] = useState(false);
   const [mobileMenu, setMobileMenu] = useState(false);
 
-
   const desktopMenuRef = useRef<HTMLDivElement | null>(null);
   const mobileMenuRef = useRef<HTMLDivElement | null>(null);
 
-
-
   useEffect(() => {
-
     const handleClickOutside = (e: MouseEvent) => {
-
       const target = e.target as Node;
 
-
-      if (
-        desktopMenuRef.current &&
-        !desktopMenuRef.current.contains(target)
-      ) {
+      if (desktopMenuRef.current && !desktopMenuRef.current.contains(target)) {
         setOpen(false);
       }
 
-
-      if (
-        mobileMenuRef.current &&
-        !mobileMenuRef.current.contains(target)
-      ) {
+      if (mobileMenuRef.current && !mobileMenuRef.current.contains(target)) {
         setMobileMenu(false);
       }
-
     };
 
+    document.addEventListener("mousedown", handleClickOutside);
 
-    document.addEventListener(
-      "mousedown",
-      handleClickOutside
-    );
-
-
-    return () =>
-      document.removeEventListener(
-        "mousedown",
-        handleClickOutside
-      );
-
-
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-
-
   return (
-
     <div className="relative">
-
-
       {/* TOP BAR  */}
 
-      <div
-        className="
-        flex
-        items-center
-        justify-between
-        px-4
-        py-4
-        gap-3
-        "
-      >
-
-
-        {/* LEFT - TITLE */}
-<h2
+   <div
   className="
-  text-xl
-  md:text-2xl
-  font-bold
-  text-gray-900
-  ml-2
-  lg:ml-14
-  flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2
+    flex
+    items-center
+    justify-between
+    px-4
+    py-4
+    gap-3
+    bg-white
+    md:border-b
+    md:border-gray-200
   "
 >
-  <span className="text-gray-700 font-medium">
-    Welcome to Movie Explorer
-  </span>
-
-  <span className="text-purple-600 text-lg md:text-xl">
-    {user?.username || "User"}
-  </span>
+        {/* LEFT - TITLE */}
+  <h2 className="hidden md:block text-xl md:text-2xl font-bold text-gray-900 ml-2 lg:ml-14 mt-3 py-2 flex-shrink-0">
+  <div className="flex items-baseline gap-2 w-max">
+    <span className="text-gray-700 font-medium text-[17px] whitespace-nowrap">
+      Welcome to Movie Explorer
+    </span>
+    <span className="text-purple-600 text-lg whitespace-nowrap">
+      {user?.username || "User"}
+    </span>
+  </div>
 </h2>
-
-
-
 
         {/* RIGHT SIDE */}
 
-        <div className="flex items-center gap-3">
-
-
+        <div className="flex items-center gap-3 w-full justify-end lg:w-auto">
           {/* NOTIFICATION */}
 
           <NotificationDropdown />
-
-
 
           {/* DESKTOP PROFILE */}
 
@@ -152,14 +95,8 @@ export default function ProfileNavbar({
             lg:block
             "
           >
-
-
             <button
-
-              onClick={() =>
-                setOpen((p) => !p)
-              }
-
+              onClick={() => setOpen((p) => !p)}
               className="
               flex
               items-center
@@ -171,17 +108,9 @@ export default function ProfileNavbar({
               hover:bg-purple-100
               transition
               "
-
             >
-
-
               <img
-
-                src={
-                  user?.avatar ||
-                  "/default-avatar.png"
-                }
-
+                src={user?.avatar || "/default-avatar.png"}
                 className="
                 w-10
                 h-10
@@ -189,24 +118,15 @@ export default function ProfileNavbar({
                 ring-2
                 ring-purple-300
                 "
-
               />
 
-
-              <ChevronDown size={16}/>
-
-
+              <ChevronDown size={16} />
             </button>
-
-
-
 
             {/* DROPDOWN */}
 
             {open && (
-
               <div
-
                 className="
                 absolute
                 right-0
@@ -222,19 +142,12 @@ export default function ProfileNavbar({
                 overflow-hidden
                 z-50
                 "
-
               >
-
-
                 <button
-
                   onClick={() => {
-
                     setSection("profile");
                     setOpen(false);
-
                   }}
-
                   className="
                   w-full
                   flex
@@ -246,26 +159,16 @@ export default function ProfileNavbar({
                   hover:bg-purple-50
                   transition
                   "
-
                 >
-
-                  <User size={16}/>
+                  <User size={16} />
                   Profile
-
                 </button>
 
-
-
-
                 <button
-
                   onClick={() => {
-
                     logout();
                     navigate("/");
-
                   }}
-
                   className="
                   w-full
                   flex
@@ -278,35 +181,18 @@ export default function ProfileNavbar({
                   text-red-500
                   transition
                   "
-
                 >
-
-                  <LogOut size={16}/>
+                  <LogOut size={16} />
                   Logout
-
                 </button>
-
-
               </div>
-
             )}
-
-
-
           </div>
-
-
-
-
 
           {/* MOBILE BUTTON */}
 
           <button
-
-            onClick={() =>
-              setMobileMenu((p)=>!p)
-            }
-
+            onClick={() => setMobileMenu((p) => !p)}
             className="
             lg:hidden
             p-2
@@ -314,36 +200,17 @@ export default function ProfileNavbar({
             bg-purple-600
             text-white
             "
-
           >
-
-            <User size={18}/>
-
+            <User size={18} />
           </button>
-
-
-
-
         </div>
-
-
       </div>
-
-
-
-
-
-
 
       {/* ================= MOBILE MENU ================= */}
 
-
       {mobileMenu && (
-
         <div
-
           ref={mobileMenuRef}
-
           className="
           lg:hidden
           absolute
@@ -360,20 +227,12 @@ export default function ProfileNavbar({
           overflow-hidden
           z-50
           "
-
         >
-
-
-
           <button
-
             onClick={() => {
-
               setSection("profile");
               setMobileMenu(false);
-
             }}
-
             className="
             w-full
             flex
@@ -385,27 +244,16 @@ export default function ProfileNavbar({
             hover:bg-purple-50
             transition
             "
-
           >
-
-            <User size={16}/>
+            <User size={16} />
             Profile
-
-
           </button>
 
-
-
-
           <button
-
             onClick={() => {
-
               logout();
               navigate("/");
-
             }}
-
             className="
             w-full
             flex
@@ -418,25 +266,12 @@ export default function ProfileNavbar({
             text-red-500
             transition
             "
-
           >
-
-            <LogOut size={16}/>
+            <LogOut size={16} />
             Logout
-
-
           </button>
-
-
-
         </div>
-
       )}
-
-
-
     </div>
-
   );
-
 }

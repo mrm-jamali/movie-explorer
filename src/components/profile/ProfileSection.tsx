@@ -14,7 +14,7 @@ export default function ProfileSection() {
 <div className="px-4 sm:px-8 lg:px-12">
       {/* HEADER */}
       <div className="mb-6">
-        <h1 className="text-2xl sm:text-3xl lg:text-[32px] font-bold text-[#111827]">
+       <h1 className="text-xl sm:text-2xl md:text-[26px] font-semibold tracking-[-0.5px] text-[#111827]">
           My Profile
         </h1>
 

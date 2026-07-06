@@ -1,7 +1,7 @@
 import { NavLink, useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { useState } from "react";
-import { Menu, X } from "lucide-react";
+import { Clapperboard, Menu, X } from "lucide-react";
 
 export default function Navbar() {
   const { user, logout } = useAuth();
@@ -10,9 +10,7 @@ export default function Navbar() {
 
   const navLinkClass = ({ isActive }: { isActive: boolean }) =>
     `relative transition ${
-      isActive
-        ? "text-purple-500"
-        : "text-gray-600 hover:text-purple-500"
+      isActive ? "text-purple-500" : "text-gray-600 hover:text-purple-500"
     }
     after:content-[''] after:absolute after:left-0 after:-bottom-1
     after:h-[2px] after:bg-purple-500 after:transition-all after:duration-300
@@ -22,7 +20,6 @@ export default function Navbar() {
     <div className="sticky top-0 z-50 bg-white/70 backdrop-blur-md border-b border-gray-200">
       <div className="max-w-[1400px] mx-auto px-6">
         <nav className="flex items-center justify-between py-4">
-          
           {/* LEFT SIDE - Hamburger + Logo */}
           <div className="flex items-center gap-4">
             {/* Hamburger Menu - فقط در موبایل */}
@@ -34,8 +31,16 @@ export default function Navbar() {
             </button>
 
             {/* Logo */}
+
             <div className="text-2xl font-extrabold text-purple-500 tracking-wide flex items-center gap-2 hover:text-purple-600 transition cursor-pointer">
-              🎬
+              <div className="w-10 h-10   rounded-2xl bg-purple-500 flex items-center justify-center shadow-md">
+                <Clapperboard
+                  size={24}
+                  className="text-white"
+                  strokeWidth={2.5}
+                />
+              </div>
+
               <span className="hidden sm:inline">MovieExplorer</span>
             </div>
           </div>
@@ -104,7 +109,7 @@ export default function Navbar() {
 
         {/* MOBILE MENU */}
         {isMenuOpen && (
-          <div className="md:hidden border-t border-gray-200 py-4 bg-white/95 backdrop-blur-md">
+        <div className="md:hidden fixed left-0 right-0 top-[64px] border-t border-gray-200 py-4 bg-white/95 backdrop-blur-md z-50">
             <div className="flex flex-col gap-4 text-base font-medium">
               <NavLink
                 to="/"

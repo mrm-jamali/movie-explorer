@@ -18,7 +18,7 @@ export default function MoviesSection() {
   const movies = data?.results || [];
 
   const filteredMovies = movies.filter((movie: any) =>
-    movie?.title?.toLowerCase().includes(search.toLowerCase())
+    movie?.title?.toLowerCase().includes(search.toLowerCase()),
   );
 
   const showToast = (message: string) => {
@@ -30,7 +30,6 @@ export default function MoviesSection() {
       <Toast message={toast} onClose={() => setToast(null)} />
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
-
         {/* ================= HEADER ================= */}
         <div className="mb-5 md:mb-6">
           <h1 className="text-xl sm:text-2xl md:text-[26px] font-semibold tracking-[-0.5px] text-[#111827]">
@@ -43,32 +42,56 @@ export default function MoviesSection() {
         </div>
 
         {/* ================= FILTERS ================= */}
-        <div className="flex flex-col gap-3 mb-6">
-
-          {/* 🔥 SEARCH (FIX اصلی ریسپانسیو) */}
-          <div className="w-full min-w-0 overflow-hidden">
+        {/* FILTERS */}
+        <div className="flex flex-col lg:flex-row gap-4 lg:items-center mb-6">
+          {/* SEARCH */}
+          <div className="w-full lg:flex-1 min-w-0">
             <SearchBar onSearch={setSearch} />
           </div>
 
           {/* FILTER BUTTONS */}
-          <div className="flex flex-wrap gap-2 sm:gap-3">
+          <div className="flex flex-col sm:flex-row gap-3 w-full lg:w-auto lg:ml-auto">
+           <button
+  className="
+    flex items-center justify-between
+    w-full sm:w-auto
+    px-4
+    h-[44px] sm:h-12
+    rounded-xl
+    border border-gray-200
+    bg-white
+    text-sm font-medium text-[#374151]
+    hover:border-purple-500 hover:text-purple-600 hover:bg-purple-50
+    transition-all active:scale-[0.97]
+  "
+>
+  <span>Genres</span>
 
-            <button className="flex flex-1 sm:flex-none justify-center sm:justify-start h-10 sm:h-[44px] items-center gap-2 rounded-xl border border-gray-200 bg-white px-3 sm:px-4 text-xs sm:text-[13px] font-medium text-[#374151] transition hover:border-[#7C3AED] hover:text-[#7C3AED] hover:bg-[#FAF5FF]">
-              Genres <ChevronDown size={16} />
-            </button>
+  <ChevronDown size={16} className="ml-2 shrink-0" />
+</button>
+<button
+  className="
+    flex items-center justify-between
+    w-full sm:w-auto
+    px-4
+    h-[44px] sm:h-12
+    rounded-xl
+    border border-gray-200
+    bg-white
+    text-sm font-medium text-[#374151]
+    hover:border-purple-500 hover:text-purple-600 hover:bg-purple-50
+    transition-all active:scale-[0.97]
+  "
+>
+  <span>Year</span>
 
-            <button className="flex flex-1 sm:flex-none justify-center sm:justify-start h-10 sm:h-[44px] items-center gap-2 rounded-xl border border-gray-200 bg-white px-3 sm:px-4 text-xs sm:text-[13px] font-medium text-[#374151] transition hover:border-[#7C3AED] hover:text-[#7C3AED] hover:bg-[#FAF5FF]">
-              Year <ChevronDown size={16} />
-            </button>
-
+  <ChevronDown size={16} className="ml-2 shrink-0" />
+</button>
           </div>
         </div>
-
         {/* ================= LOADING ================= */}
         {isLoading && (
-          <div className="text-sm text-gray-500 mb-6">
-            Loading movies...
-          </div>
+          <div className="text-sm text-gray-500 mb-6">Loading movies...</div>
         )}
 
         {/* ================= ERROR ================= */}
@@ -79,7 +102,8 @@ export default function MoviesSection() {
         )}
 
         {/* ================= GRID ================= */}
-        <div className="
+        <div
+          className="
           grid
           grid-cols-1
           sm:grid-cols-3
@@ -88,7 +112,8 @@ export default function MoviesSection() {
           gap-3
           sm:gap-4
           md:gap-6
-        ">
+        "
+        >
           {filteredMovies
             ?.filter((movie) => movie?.id)
             .map((movie: any) => (
@@ -112,7 +137,6 @@ export default function MoviesSection() {
             />
           </div>
         )}
-
       </div>
     </>
   );

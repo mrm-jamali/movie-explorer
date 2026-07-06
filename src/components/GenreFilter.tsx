@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type { Genre } from "../types/movie";
-
+import { useNavigate } from "react-router-dom";
 type Props = {
   genres: Genre[];
   selectedGenre: number | null;
@@ -9,10 +9,11 @@ type Props = {
 
 export default function GenreFilter({
   genres,
-  selectedGenre,
+  selectedGenre, 
   onSelectGenre,
 }: Props) {
   const [showAll, setShowAll] = useState(false);
+  const navigate = useNavigate();
 
   const selectedGenreIds = [28, 35, 18, 27, 10749, 878];
 
@@ -24,7 +25,6 @@ export default function GenreFilter({
 
   return (
     <div className="flex flex-wrap gap-2 items-center">
-
       {visibleGenres.map((genre) => (
         <button
           key={genre.id}
@@ -41,7 +41,10 @@ export default function GenreFilter({
 
       {/* View All */}
       <button
-        onClick={() => onSelectGenre(null)}
+        onClick={() => {
+          onSelectGenre(null);
+          navigate("/movies"); // یا /movielist بسته به route تو
+        }}
         className={`px-3 md:px-4 py-1.5 md:py-2 rounded-full transition cursor-pointer text-sm md:text-base ${
           selectedGenre === null
             ? "bg-purple-500 text-white"
@@ -58,7 +61,6 @@ export default function GenreFilter({
       >
         {showAll ? "Show Less" : "More"}
       </button>
-
     </div>
   );
 }

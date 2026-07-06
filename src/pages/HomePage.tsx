@@ -122,24 +122,30 @@ function HomePage() {
   />
 
 </div> */}
-        <div className="mt-20 mb-6 w-full">
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 sm:gap-6">
-            {/* SearchBar */}
-            <div className="w-full sm:w-auto flex-1 min-w-0">
-              <SearchBar onSearch={setSearch} />
-            </div>
+        {/* SEARCH + GENRE FILTER - Fully Responsive */}
+{/* SEARCH + GENRE FILTER */}
+{/* SEARCH + GENRE FILTER */}
+{/* SEARCH + GENRE FILTER */}
+{/* SEARCH + GENRE FILTER */}
+<div className="mt-20 mb-6 w-full">
+  <div className="flex flex-col lg:flex-row gap-5 lg:items-center">
+    
+    {/* SearchBar */}
+    <div className="w-full lg:flex-1 min-w-0">
+      <SearchBar onSearch={setSearch} />
+    </div>
 
-            {/* Genre Filter */}
-            <div className="w-full sm:w-auto flex-shrink-0">
-              <GenreFilter
-                genres={genresData?.genres || []}
-                selectedGenre={selectedGenre}
-                onSelectGenre={setSelectedGenre}
-              />
-            </div>
-          </div>
-        </div>
+    {/* Genre Filter */}
+    <div className="w-full lg:w-auto lg:flex-shrink-0">
+      <GenreFilter
+        genres={genresData?.genres || []}
+        selectedGenre={selectedGenre}
+        onSelectGenre={setSelectedGenre}
+      />
+    </div>
 
+  </div>
+</div>
         {/* MOVIES HEADER */}
 
         <div className="flex items-center justify-between mb-4 mt-8 lg:mt-16">
@@ -149,13 +155,45 @@ function HomePage() {
           </h2>
 
           <div className="flex items-center gap-2">
-            <button onClick={() => scrollMovies("left")}>
-              <ChevronLeft size={18} />
-            </button>
+           <button
+  onClick={() => scrollMovies("left")}
+  className="
+    h-9 
+    w-9 
+    flex 
+    items-center 
+    justify-center 
+    rounded-full 
+    bg-white 
+    shadow 
+    cursor-pointer
+    hover:bg-purple-500
+    hover:text-white
+    transition-colors
+  "
+>
+  <ChevronLeft size={18} />
+</button>
 
-            <button onClick={() => scrollMovies("right")}>
-              <ChevronRight size={18} />
-            </button>
+           <button
+  onClick={() => scrollMovies("right")}
+  className="
+    h-9 
+    w-9 
+    flex 
+    items-center 
+    justify-center 
+    rounded-full 
+    bg-white 
+    shadow 
+    cursor-pointer
+    hover:bg-purple-500
+    hover:text-white
+    transition-colors
+  "
+>
+  <ChevronRight size={18} />
+</button>
           </div>
         </div>
 
@@ -178,13 +216,45 @@ function HomePage() {
           </h2>
 
           <div className="flex items-center gap-2">
-            <button onClick={() => scrollContinue("left")}>
-              <ChevronLeft size={18} />
-            </button>
+         <button
+  onClick={() => scrollContinue("left")}
+  className="
+    h-9 
+    w-9 
+    flex 
+    items-center 
+    justify-center 
+    rounded-full 
+    bg-white 
+    shadow 
+    cursor-pointer
+    hover:bg-purple-500
+    hover:text-white
+    transition-colors
+  "
+>
+  <ChevronLeft size={18} />
+</button>
 
-            <button onClick={() => scrollContinue("right")}>
-              <ChevronRight size={18} />
-            </button>
+          <button
+  onClick={() => scrollContinue("right")}
+  className="
+    h-9 
+    w-9 
+    flex 
+    items-center 
+    justify-center 
+    rounded-full 
+    bg-white 
+    shadow 
+    cursor-pointer
+    hover:bg-purple-500
+    hover:text-white
+    transition-colors
+  "
+>
+  <ChevronRight size={18} />
+</button>
           </div>
         </div>
 
@@ -196,7 +266,7 @@ function HomePage() {
           ))}
         </div>
       </div>
-    </QueryState>
+    </QueryState> 
   );
 }
 

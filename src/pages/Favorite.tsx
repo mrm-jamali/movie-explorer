@@ -42,25 +42,34 @@ export default function Favorites() {
       {/* HEADER */}
       <div className="flex justify-between items-center mb-10">
         <div>
-          <h1 className="text-3xl font-bold text-purple-700">
-            Favorite Movies
-          </h1>
-          <p className="text-gray-500 mt-1">Your personal movie collection</p>
+         <h1 className="text-2xl md:text-3xl font-bold text-purple-700 whitespace-nowrap">
+  Favorite Movies
+</h1>
+         <p className="hidden md:block text-gray-500 mt-1">Your personal movie collection</p>
         </div>
 
-        <div className="bg-purple-100 text-purple-700 px-4 py-2 rounded-full font-semibold">
-          {favorites.length} Movies
-        </div>
+        <div className="bg-purple-100 text-purple-700 px-3 md:px-4 py-1.5 md:py-2 text-sm md:text-base rounded-full font-semibold whitespace-nowrap">
+  {favorites.length} Movies
+</div>
       </div>
 
       {/* EMPTY STATES */}
       {!user ? (
         <p className="text-center text-gray-500 mt-20">Please login first</p>
       ) : favorites.length === 0 ? (
-        <p className="text-center mt-20 flex items-center justify-center gap-3 text-lg font-semibold text-gray-700">
-          <Clapperboard size={26} className="text-purple-500" />
-          No favorites yet
-        </p>
+        <div className="flex justify-center mt-10">
+          <div className="w-full max-w-7xl bg-white rounded-2xl shadow-md p-8 flex flex-col items-center gap-3">
+            <Clapperboard size={40} className="text-purple-500" />
+
+            <p className="text-lg font-semibold text-gray-700">
+              No favorites yet
+            </p>
+
+            <p className="text-sm text-gray-400 text-center">
+              Start adding movies to your favorites list
+            </p>
+          </div>
+        </div>
       ) : (
         <div className="flex flex-col gap-5">
           {favorites.map((movie) => (
@@ -92,7 +101,7 @@ export default function Favorites() {
                         size={14}
                         className="text-yellow-400 fill-yellow-400"
                       />
-                     {movie.vote_average?.toFixed(1) || "N/A"}
+                      {movie.vote_average?.toFixed(1) || "N/A"}
                     </span>
                   </div>
 

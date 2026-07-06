@@ -99,6 +99,7 @@ export default function MoviesList() {
             className={`flex-1 transition-all duration-300 ${
               desktopFiltersOpen ? "" : "lg:ml-0"
             }`}
+            
           >
             <div
               className="

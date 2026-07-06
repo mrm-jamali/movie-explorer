@@ -6,6 +6,9 @@ import { Heart, Star, Bookmark } from "lucide-react";
 import QueryState from "../components/QueryState";
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
+import { Play } from "lucide-react";
+import { fetchMovieVideos } from "../services/movieApi";
+import { useState } from "react";
 
 import {
   fetchMovieDetails,
@@ -18,10 +21,25 @@ import { useWatchList } from "../contexts/WatchListContext";
 import { useAuth } from "../contexts/AuthContext";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import type { Movie } from "../types/movie";
+import VideoPlayer from "../components/VideoPlayer";
 
 function MovieDetails() {
   const { id } = useParams();
+  const [videoKey, setVideoKey] = useState("");
 
+const handlePlayMovie = async () => {
+  const videos = await fetchMovieVideos(data.id);
+
+  const trailer = videos.results.find(
+    (video:any)=>
+      video.site === "YouTube" &&
+      video.type === "Trailer"
+  );
+
+  if(trailer){
+    setVideoKey(trailer.key);
+  }
+};
   const { toggleFavorite, isFavorite } = useFavorites();
   const { toggleWatchList, isInWatchList } = useWatchList();
 
@@ -161,6 +179,25 @@ function MovieDetails() {
 
                   {watchListed ? "Added to WatchList" : "Add to WatchList"}
                 </button>
+                {/* PLAY MOVIE */}
+<button
+onClick={handlePlayMovie}
+className="
+flex
+items-center
+gap-2
+px-5
+py-2
+rounded-lg
+bg-purple-500
+text-white
+hover:bg-purple-600
+transition   cursor-pointer
+"
+>
+  <Play size={18}/>
+  Play Movie
+</button>
               </div>
 
               {/* Overview */}
@@ -175,7 +212,7 @@ function MovieDetails() {
           {/* CAST */}
           {filteredCast.length > 0 && (
             <div className="mt-10">
-              <h2 className="text-lg font-bold mb-4">Cast</h2>
+              <h2 className="text-lg font-bold mb-4 ml-3">Cast</h2>
 
               <div className="flex gap-4 flex-wrap">
                 {filteredCast.slice(0, 6).map((actor: any) => (
@@ -203,7 +240,20 @@ function MovieDetails() {
                     const el = document.getElementById("similar-row");
                     if (el) el.scrollLeft -= 300;
                   }}
-                  className="h-9 w-9 flex items-center justify-center rounded-full bg-white shadow hover:bg-gray-100"
+                  className="
+    h-9 
+    w-9 
+    flex 
+    items-center 
+    justify-center 
+    rounded-full 
+    bg-white 
+    shadow 
+    cursor-pointer
+    hover:bg-purple-500
+    hover:text-white
+    transition-colors
+  "
                 >
                   <ChevronLeft size={18} />
                 </button>
@@ -213,7 +263,20 @@ function MovieDetails() {
                     const el = document.getElementById("similar-row");
                     if (el) el.scrollLeft += 300;
                   }}
-                  className="h-9 w-9 flex items-center justify-center rounded-full bg-white shadow hover:bg-gray-100"
+                  className="
+    h-9 
+    w-9 
+    flex 
+    items-center 
+    justify-center 
+    rounded-full 
+    bg-white 
+    shadow 
+    cursor-pointer
+    hover:bg-purple-500
+    hover:text-white
+    transition-colors
+  "
                 >
                   <ChevronRight size={18} />
                 </button>
@@ -244,6 +307,12 @@ function MovieDetails() {
           )}
         </div>
       )}
+      {videoKey && (
+  <VideoPlayer
+    videoKey={videoKey}
+    onClose={() => setVideoKey("")}
+  />
+)} 
     </QueryState>
   );
 }

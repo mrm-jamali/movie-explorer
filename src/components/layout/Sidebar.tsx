@@ -40,7 +40,7 @@ export default function Sidebar({ section, setSection }: SidebarProps) {
         bg-white
         px-5 py-7
         flex flex-col
-        justify-between
+        justify-between mr-[1px]
       "
     >
       {/* TOP */}

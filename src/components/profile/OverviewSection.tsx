@@ -30,10 +30,10 @@ export default function OverviewSection() {
       {/*  HERO  */}
       <section className="pt-6 md:pt-8">
 
-        {/* 💻 DESKTOP HERO TEXT */}
+        {/* DESKTOP HERO TEXT */}
         <div className="hidden sm:block mb-7">
-          <h1 className="text-xl sm:text-2xl md:text-[34px] font-bold tracking-[-0.5px] text-[#111827]">
-            Welcome back, {user?.username}!
+          <h1 className="text-xl sm:text-2xl md:text-[26px] font-semibold tracking-[-0.5px] text-[#111827]">
+          Overview
           </h1>
 
           <p className="mt-2 text-sm md:text-[16px] text-[#6B7280]">
@@ -66,7 +66,7 @@ export default function OverviewSection() {
           </div>
         </div>
 
-        {/* 💻 HERO SLIDER */}
+        {/*HERO SLIDER */}
         <div className="hidden sm:block">
           <HeroSlider />
         </div>
