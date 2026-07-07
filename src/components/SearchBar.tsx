@@ -6,7 +6,7 @@ type Props = {
 };
 
 export default function SearchBar({ onSearch }: Props) {
-  const [focused, setFocused] = useState(false);
+  // const [focused, setFocused] = useState(false);
   const [search, setSearch] = useState("");
 
   useEffect(() => {

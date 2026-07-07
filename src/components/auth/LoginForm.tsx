@@ -56,7 +56,7 @@ export default function LoginForm() {
 
             <input
               type="text"
-              placeholder="Enter username"
+              placeholder="user"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition"
@@ -71,7 +71,7 @@ export default function LoginForm() {
 
             <input
               type="password"
-              placeholder="Enter password"
+              placeholder="123"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition"
@@ -103,6 +103,10 @@ export default function LoginForm() {
             Back to Home
           </button>
         </form>
+        <p className="text-md text-gray-500 text-center mt-4">
+  Demo Account: <span className="font-medium">user</span> /
+  <span className="font-medium">123</span>
+</p>
 
         {/* Footer */}
         <p className="text-center text-xs text-gray-400 mt-5">

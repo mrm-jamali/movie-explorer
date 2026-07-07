@@ -28,16 +28,25 @@ function MovieDetails() {
   const [videoKey, setVideoKey] = useState("");
 
 const handlePlayMovie = async () => {
-  const videos = await fetchMovieVideos(data.id);
+  try {
+    if (!id) return;
 
-  const trailer = videos.results.find(
-    (video:any)=>
-      video.site === "YouTube" &&
-      video.type === "Trailer"
-  );
+    const videos = await fetchMovieVideos(Number(id));
 
-  if(trailer){
-    setVideoKey(trailer.key);
+    const trailer = videos?.results?.find(
+      (video: any) =>
+        video.site === "YouTube" &&
+        video.type === "Trailer"
+    );
+
+    if (trailer?.key) {
+      setVideoKey(trailer.key);
+    } else {
+      console.log("No trailer found");
+    }
+
+  } catch (error) {
+    console.log(error);
   }
 };
   const { toggleFavorite, isFavorite } = useFavorites();
