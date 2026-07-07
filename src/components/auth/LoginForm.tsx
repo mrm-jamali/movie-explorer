@@ -46,7 +46,7 @@ export default function LoginForm() {
           Sign in to continue exploring movies
         </p>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4" autoComplete="off">
 
           {/* Username */}
           <div>
